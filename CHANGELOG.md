@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.1 - 2017-03-17
+* Added   `Josantonius/Url` library.
+* Deleted `Josantonius\Router\Router::getUriMethods()` method.
+
 ## 1.0.0 - 2017-03-16
 * Added `Josantonius\Router\Router` class.
 * Added `Josantonius\Router\Router::__callstatic()` method.

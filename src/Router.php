@@ -12,7 +12,8 @@
 
 namespace Josantonius\Router;
 
-use Josantonius\Router\Exception\RouterException;
+use Josantonius\Url\Url,
+    Josantonius\Router\Exception\RouterException;
 
 /**
  * Route handler.
@@ -209,7 +210,7 @@ class Router {
      */
     public static function dispatch() {
 
-        static::$uri = self::getUriMethods();
+        static::$uri = Url::addBackslash(Url::getUriMethods());
 
         static::_parseUrl();
 
@@ -261,26 +262,6 @@ class Router {
                 }
             }
         }
-    }
-
-    /**
-     * Remove subdirectories from uri if they exist and return uri methods.
-     *
-     * @since 1.0.0
-     *
-     * @return string → method1/method2/method3
-     */
-    public static function getUriMethods() {
-
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-        $root = $_SERVER["DOCUMENT_ROOT"];
-
-        $subfolder = trim(str_replace($root, '', getcwd()), '/');
-
-        $uri = trim(str_replace($subfolder, '', $uri), '/');
-
-        return (substr($uri, -1) === "/") ? $uri : $uri . "/";
     }
 
     /**
