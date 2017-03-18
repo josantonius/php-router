@@ -1,0 +1,55 @@
+[
+    {
+        "name": "josantonius/url",
+        "version": "1.1.0",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Josantonius/PHP-Url.git",
+            "reference": "f26d65b9656ca86173bfb61a626655302f8e0921"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Josantonius/PHP-Url/zipball/f26d65b9656ca86173bfb61a626655302f8e0921",
+            "reference": "f26d65b9656ca86173bfb61a626655302f8e0921",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.6"
+        },
+        "time": "2017-02-28 04:18:50",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Josantonius\\Url\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Josantonius",
+                "email": "hola@josantonius.com",
+                "homepage": "https://github.com/josantonius",
+                "role": "Developer"
+            }
+        ],
+        "description": "Library for urls manipulation.",
+        "keywords": [
+            "hhvm",
+            "https",
+            "path",
+            "php",
+            "uri",
+            "url"
+        ]
+    }
+]
