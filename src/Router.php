@@ -367,6 +367,8 @@ class Router {
  
                     self::$foundRoute = true;
 
+                    $matched = explode('/', trim($matched[0], '/'));
+
                     array_shift($matched);
 
                     if (!is_object(self::$callbacks[$pos])) {
