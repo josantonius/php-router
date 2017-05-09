@@ -240,7 +240,7 @@ class Router {
 
                 self::$errorCallback = function () {
 
-                   var_dump(self::$uri);
+                   /* Set errors */
                 };
             }
 
