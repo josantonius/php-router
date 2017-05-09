@@ -65,7 +65,7 @@ class Router {
      *
      * @var null $errorCallback
      */
-    public static $errorCallback;
+    public static $errorCallback = false;
 
     /**
      * Requested route status.
@@ -221,7 +221,7 @@ class Router {
 
         self::$routes = str_replace('//', '/', self::$routes);
 
-        $found_route = false;
+        self::$foundRoute = false;
 
         if (in_array(self::$uri, self::$routes)) {
 
@@ -236,24 +236,7 @@ class Router {
 
         if (!self::$foundRoute) {
 
-            if (!self::$errorCallback) {
-
-                self::$errorCallback = function () {
-
-                   /* Set errors */
-                };
-            }
-
-            if (!is_object(self::$errorCallback)) {
-
-                self::invokeObject(
-                    self::$errorCallback, null, 'No routes found.'
-                );
-
-            } else {
-
-                call_user_func(self::$errorCallback);
-            }
+            self::_getErrorCallback();
         }
     }
 
@@ -266,7 +249,7 @@ class Router {
 
         $query = '';
 
-        $q_arr = array();
+        $data = array();
 
         if (strpos(self::$uri, '&') > 0) {
 
@@ -274,17 +257,17 @@ class Router {
 
             self::$uri = substr(self::$uri, 0, strpos(self::$uri, '&'));
 
-            $q_arr = explode('&', $query);
+            $data = explode('&', $query);
 
-            foreach ($q_arr as $q) {
+            foreach ($data as $value) {
 
-                $qobj = explode('=', $q);
+                $params = explode('=', $value);
 
-                $q_arr[] = array($qobj[0] => $qobj[1]);
+                $data[] = array($params[0] => $params[1]);
 
-                if (!isset($_GET[$qobj[0]])) {
+                if (!isset($_GET[$params[0]])) {
 
-                    $_GET[$qobj[0]] = $qobj[1];
+                    $_GET[$params[0]] = $params[1];
                 }
             }
         }
@@ -384,6 +367,30 @@ class Router {
             }
 
             $pos++;
+        }
+    }
+
+    /**
+     * Get error callback if route does not exists.
+     *
+     * @since 1.0.3
+     */
+    private static function _getErrorCallback() {
+
+        if (!self::$errorCallback) {
+
+            self::$errorCallback = function () { /* Set errors */ };
+        }
+
+        if (!is_object(self::$errorCallback)) {
+
+            self::invokeObject(
+                self::$errorCallback, null, 'No routes found.'
+            );
+        
+        } else {
+
+            call_user_func(self::$errorCallback);
         }
     }
 

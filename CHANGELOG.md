@@ -3,6 +3,7 @@
 ## 1.0.3 - 2017-05-09
 * Deleted `Josantonius\Router\Router::loadRegexRoutes()` method.
 * Added   `Josantonius\Router\Router::_getRegexRoutes()` method.
+* Added   `Josantonius\Router\Router::_getErrorCallback()` method.
 
 * Bugs fixed in dispatch() and _checkRegexRoutes() methods.
 
