@@ -250,19 +250,9 @@ class Router {
                     self::$errorCallback, null, 'No routes found.'
                 );
 
-                if (self::$halts) {
-
-                    return;
-                }
-
             } else {
 
                 call_user_func(self::$errorCallback);
-
-                if (self::$halts) {
-
-                    return;
-                }
             }
         }
     }
