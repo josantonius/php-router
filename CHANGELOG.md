@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.0.3 - 2017-05-09
+* Deleted `Josantonius\Router\Router::loadRegexRoutes()` method.
+* Added   `Josantonius\Router\Router::_getRegexRoutes()` method.
+
+* Bugs fixed in the _checkRegexRoutes() method.
+
 ## 1.0.2 - 2017-03-18
 * Some files were excluded from download and comments and readme files were updated.
 
