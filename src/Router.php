@@ -294,6 +294,8 @@ class Router {
 
         foreach ($route_pos as $route) {
 
+            self::$foundRoute = false;
+
             $methodRoute = self::$methods[$route];
 
             if ($methodRoute == $method || $methodRoute == 'ANY') {
@@ -338,6 +340,8 @@ class Router {
 
         foreach (self::$routes as $route) {
 
+            self::$foundRoute = false;
+
             $route = str_replace($searches, $replaces, $route);
 
             $route = Url::addBackslash($route);
@@ -376,9 +380,9 @@ class Router {
 
                     self::$halts--;
                 }
-
-                $pos++;
             }
+
+            $pos++;
         }
     }
 
@@ -396,9 +400,7 @@ class Router {
 
         if (!is_object(self::$errorCallback)) {
 
-            self::invokeObject(
-                self::$errorCallback, null, 'No routes found.'
-            );
+            self::invokeObject(self::$errorCallback);
         
         } else {
 
@@ -419,9 +421,8 @@ class Router {
      *
      * @param object $callback
      * @param array  $matched  → array of matched parameters
-     * @param string $msg
      */
-    public static function invokeObject($callback, $matched=null, $msg=null) {
+    public static function invokeObject($callback, $matched = null) {
 
         $last = explode('/', $callback);
         $last = end($last);

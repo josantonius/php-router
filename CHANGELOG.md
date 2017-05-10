@@ -5,6 +5,8 @@
 * Added   `Josantonius\Router\Router::keepLooking()` method.
 
 * Bugs fixed in dispatch() method.
+* Bugs fixed in _checkRoutes() method.
+* Bugs fixed in _checkRegexRoutes() method.
 
 * Now from the keepLooking() method, in addition to establishing whether to continue processing routes, it will be possible to indicate the number of routes to be processed.
 
