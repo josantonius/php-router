@@ -422,8 +422,6 @@ class Router {
         $method  = $segments[1];
         $matched = $matched ? $matched : [];
 
-        $instance = $class::getInstance();
-
         if (method_exists($class, self::$_singleton)) {
 
             $instance = call_user_func([$class, self::$_singleton]); 
@@ -431,9 +429,12 @@ class Router {
             return call_user_func_array([$instance, $method], $matched);
         }
 
-        $instance = new $class;
+        if (class_exists($class)) {
 
-        return call_user_func_array([$instance, $method], $matched);
+            $instance = new $class;
+
+            return call_user_func_array([$instance, $method], $matched);
+        }
     }
 
     /**
