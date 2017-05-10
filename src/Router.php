@@ -213,9 +213,11 @@ class Router {
      */
     public static function dispatch() {
 
-        self::$uri = Url::addBackslash(Url::getUriMethods());
+        self::$uri = Url::getUriMethods();
 
         self::_parseUrl();
+
+        self::$uri = Url::addBackslash(self::$uri);
 
         self::_routeValidator();
 
