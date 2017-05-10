@@ -331,7 +331,9 @@ class Router {
         foreach (self::$routes as $route) {
 
             $route = str_replace($searches, $replaces, $route);
- 
+
+            $route = Url::addBackslash($route);
+
             if (preg_match('#^' . $route . '$#', self::$uri, $matched)) {
 
                 $methodRoute = self::$methods[$pos];
