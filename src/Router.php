@@ -12,8 +12,9 @@
 
 namespace Josantonius\Router;
 
-use Josantonius\Url\Url,
-    Josantonius\Router\Exception\RouterException;
+use Josantonius\Url\Url;
+
+# use Josantonius\Router\Exception\RouterException;
 
 /**
  * Route handler.
@@ -29,7 +30,7 @@ class Router {
      *
      * @var boolean $halts
      */
-    public static $halts = true;
+    public static $halts = false;
 
     /**
      * Array of routes.
@@ -63,7 +64,7 @@ class Router {
      *
      * @since 1.0.0
      *
-     * @var null $errorCallback
+     * @var bool|int $errorCallback
      */
     public static $errorCallback = false;
 
@@ -195,15 +196,18 @@ class Router {
     }
 
     /**
-     * Don't load any further routes on match.
+     * Continue processing after match (true) or stopping it (false).
+     * Also can specify the number of total routes to process (int).
      *
-     * @since 1.0.0
+     * @since 1.0.4
      *
-     * @param boolean $flag
+     * @param boolean|int $value
      */
-    public static function haltOnMatch($flag = true) {
+    public static function keepLooking($value = true) {
 
-        self::$halts = $flag;
+        $value = (is_int($value)) ? $value - 1 : $value;
+
+        self::$halts = $value;
     }
 
     /**
@@ -305,10 +309,12 @@ class Router {
                     call_user_func(self::$callbacks[$route]);
                 }
 
-                if (self::$halts) {
+                if (!self::$halts && !self::$halts > 0) {
 
                     return;
                 }
+
+                self::$halts--;
             }
         }
     }
@@ -363,14 +369,16 @@ class Router {
                         );
                     }
 
-                    if (self::$halts) {
+                    if (!self::$halts) {
                         
                         return;
                     }
-                }
-            }
 
-            $pos++;
+                    self::$halts--;
+                }
+
+                $pos++;
+            }
         }
     }
 

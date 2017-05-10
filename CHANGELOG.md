@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.0.4 - 2017-05-10
+* Deleted `Josantonius\Router\Router::haltOnMatch()` method.
+* Added   `Josantonius\Router\Router::keepLooking()` method.
+
+* Bugs fixed in dispatch() method.
+
+* Now from the keepLooking() method, in addition to establishing whether to continue processing routes, it will be possible to indicate the number of routes to be processed.
+
 ## 1.0.3 - 2017-05-09
 * Deleted `Josantonius\Router\Router::loadRegexRoutes()` method.
 * Added   `Josantonius\Router\Router::_getRegexRoutes()` method.
