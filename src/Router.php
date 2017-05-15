@@ -422,7 +422,7 @@ class Router {
      * @param object $callback
      * @param array  $matched  → array of matched parameters
      */
-    public static function invokeObject($callback, $matched = null) {
+    protected static function invokeObject($callback, $matched = null) {
 
         $last = explode('/', $callback);
         $last = end($last);

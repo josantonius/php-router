@@ -1,8 +1,14 @@
 # CHANGELOG
 
-## 1.0.4 - 2017-05-10
+## 1.0.4 - 2017-05-15
 * Deleted `Josantonius\Router\Router::haltOnMatch()` method.
 * Added   `Josantonius\Router\Router::keepLooking()` method.
+
+* Added `Josantonius\Router\Tests\RouterTest::testGetRoute()` method.
+* Added `Josantonius\Router\Tests\RouterTest::testkeepLooking1()` method.
+* Added `Josantonius\Router\Tests\RouterTest::testkeepLooking2()` method.
+* Added `Josantonius\Router\Tests\RouterTest::testkeepLooking3()` method.
+* Added `Josantonius\Router\Tests\RouterTest::testDefineErrorCallback()` method.
 
 * Bugs fixed in dispatch() method.
 * Bugs fixed in _checkRoutes() method.

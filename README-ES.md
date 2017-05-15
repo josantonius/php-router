@@ -62,12 +62,9 @@ Router::__callstatic();
 Router::setSingletonName();
 Router::addRoute();
 Router::getRoute();
-Router::loadRegexRoutes();
 Router::error();
-Router::haltOnMatch();
+Router::keepLooking();
 Router::dispatch();
-Router::getUriMethods();
-Router::invokeObject();
 ```
 ### Uso
 
@@ -108,6 +105,12 @@ Métodos de prueba disponibles en esta librería:
 RouterTest::testAddRoutes();
 RouterTest::testSetSingletonName();
 RouterTest::testExecuteRoutes();
+RouterTest::testGetRoute();
+RouterTest::testkeepLooking1();
+RouterTest::testkeepLooking2();
+RouterTest::testkeepLooking3();
+RouterTest::testDefineErrorCallback();
+```
 ```
 
 ### Manejador de excepciones

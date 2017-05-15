@@ -78,4 +78,76 @@ class RouterTest {
 
         Router::dispatch();
     }
+
+    /**
+     * Check if route exists.
+     *
+     * @since 1.0.4
+     */
+    public static function testGetRoute() {
+        
+        self::testAddRoutes();
+
+        var_dump(Router::getRoute('home/'));
+    }
+
+    /**
+     * Keep looking.
+     *
+     * @since 1.0.4
+     */
+    public static function testkeepLooking1() {
+
+        self::testAddRoutes();
+
+        /**
+         * Continue processing after match (true) or stopping it (false).
+         * Also can specify the number of total routes to process (int).
+         */
+        Router::keepLooking();
+
+        Router::dispatch();
+    }
+
+    /**
+     * Keep looking.
+     *
+     * @since 1.0.4
+     */
+    public static function testkeepLooking2() {
+
+        self::testAddRoutes();
+
+        Router::keepLooking(true);
+
+        Router::dispatch();
+    }
+
+    /**
+     * Keep looking.
+     *
+     * @since 1.0.4
+     */
+    public static function testkeepLooking3() {
+
+        self::testAddRoutes();
+
+        Router::keepLooking(3); // Execute 3 routes at most.
+
+        Router::dispatch();
+    }
+
+    /**
+     * Defines callback if route is not found.
+     *
+     * @since 1.0.4
+     */
+    public static function testDefineErrorCallback() {
+
+        self::testAddRoutes();
+
+        Router::error('Josantonius\Router\Tests\Example@error');
+
+        Router::dispatch();
+    }
 }
