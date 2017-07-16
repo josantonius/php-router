@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.0.5 - 2017-07-16
+* Deleted `Josantonius\Router\Exception\RouterException` class.
+* Deleted `Josantonius\Router\Exception\Exceptions` abstract class.
+* Deleted `Josantonius\Router\Exception\RouterException->__construct()` method.
+
 ## 1.0.4 - 2017-05-15
 * Deleted `Josantonius\Router\Router::haltOnMatch()` method.
 * Added   `Josantonius\Router\Router::keepLooking()` method.

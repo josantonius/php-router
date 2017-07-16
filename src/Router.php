@@ -14,8 +14,6 @@ namespace Josantonius\Router;
 
 use Josantonius\Url\Url;
 
-# use Josantonius\Router\Exception\RouterException;
-
 /**
  * Route handler.
  *

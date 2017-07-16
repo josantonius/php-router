@@ -14,11 +14,20 @@ Library for handling routes.
 - [Available Methods](#available-methods)
 - [Usage](#usage)
 - [Tests](#tests)
-- [Exception Handler](#exception-handler)
 - [Contribute](#contribute)
 - [Repository](#repository)
 - [Licensing](#licensing)
 - [Copyright](#copyright)
+
+---
+
+<p align="center"><strong>Take a look at the code</strong></p>
+
+<p align="center">
+  <a href="" title="Take a look at the code">
+  	<img src="https://raw.githubusercontent.com/Josantonius/PHP-Algorithm/master/resources/youtube-thumbnail.jpg">
+  </a>
+</p>
 
 ---
 
@@ -105,9 +114,6 @@ RouterTest::testkeepLooking3();
 RouterTest::testDefineErrorCallback();
 ```
 
-### Exception Handler
-
-This library uses [exception handler](src/Exception) that you can customize.
 ### Contribute
 1. Check for open issues or open a new issue to start a discussion around a bug or feature.
 1. Fork the repository on GitHub to start making your changes.
