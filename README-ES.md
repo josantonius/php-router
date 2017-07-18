@@ -4,7 +4,7 @@
 
 [English version](README.md)
 
-Librería para manejo de rutas.
+Biblioteca para manejo de rutas.
 
 ---
 
@@ -24,7 +24,7 @@ Librería para manejo de rutas.
 <p align="center"><strong>Echa un vistazo al código</strong></p>
 
 <p align="center">
-  <a href="" title="Echa un vistazo al código">
+  <a href="https://youtu.be/hLw4usYo8CI" title="Echa un vistazo al código">
   	<img src="https://raw.githubusercontent.com/Josantonius/PHP-Algorithm/master/resources/youtube-thumbnail.jpg">
   </a>
 </p>
@@ -51,11 +51,11 @@ También puedes clonar el repositorio completo con Git:
 
 Esta biblioteca es soportada por versiones de PHP 5.6 o superiores y es compatible con versiones de HHVM 3.0 o superiores.
 
-Para utilizar esta librería en HHVM (HipHop Virtual Machine) tendrás que activar los tipos escalares. Añade la siguiente ĺínea "hhvm.php7.scalar_types = true" en tu "/etc/hhvm/php.ini".
+Para utilizar esta biblioteca en HHVM (HipHop Virtual Machine) tendrás que activar los tipos escalares. Añade la siguiente ĺínea "hhvm.php7.scalar_types = true" en tu "/etc/hhvm/php.ini".
 
 ### Cómo empezar y ejemplos
 
-Para utilizar esta librería, simplemente:
+Para utilizar esta biblioteca, simplemente:
 
 ```php
 require __DIR__ . '/vendor/autoload.php';
@@ -64,7 +64,7 @@ use Josantonius\Router\Router;
 ```
 ### Métodos disponibles
 
-Métodos disponibles en esta librería:
+Métodos disponibles en esta biblioteca:
 
 ```php
 Router::__callstatic();
@@ -77,7 +77,7 @@ Router::dispatch();
 ```
 ### Uso
 
-Ejemplo de uso para esta librería:
+Ejemplo de uso para esta biblioteca:
 
 ```php
 <?php
@@ -108,7 +108,7 @@ $loader->addPsr4('Josantonius\\Router\\Tests\\', __DIR__ . '/vendor/josantonius/
 
 use Josantonius\Router\Tests\RouterTest;
 ```
-Métodos de prueba disponibles en esta librería:
+Métodos de prueba disponibles en esta biblioteca:
 
 ```php
 RouterTest::testAddRoutes();
