@@ -2,17 +2,15 @@
 /**
  * Library for urls manipulation.
  * 
- * @author     Josantonius - hola@josantonius.com
+ * @author     Josantonius - hello@josantonius.com
  * @author     David Carr  - dave@simplemvcframework.com
- * @copyright  Copyright (c) 2017 JST PHP Framework
+ * @copyright  Copyright (c) 2017
  * @license    https://opensource.org/licenses/MIT - The MIT License (MIT)
  * @link       https://github.com/Josantonius/PHP-Url
  * @since      1.0.0
  */
 
 namespace Josantonius\Url;
-
-# use Josantonius\Url\Exception\UrlException;
 
 /**
  * Url handler.
@@ -30,15 +28,15 @@ class Url {
      */
     public static function getCurrentPage() {
 
-        $protocol = static::getProtocol();
+        $protocol = self::getProtocol();
 
-        $host = static::getDomain();
+        $host = self::getDomain();
 
-        $port = ':' . static::getPort();
+        $port = ':' . self::getPort();
 
         $port = (($port == ':80') || ($port == ':443')) ? '' : $port;
 
-        $uri = static::getUri();
+        $uri = self::getUri();
 
         return $protocol . '://' . $host . $port . $uri;
     }
@@ -52,11 +50,16 @@ class Url {
      */
     public static function getBaseUrl() {
 
-        $uri = static::getUriMethods();
+        $uri = self::addBackslash(self::getUriMethods(), 'both');
 
-        $url = trim(str_replace($uri, '', static::getCurrentPage()), '/');
+        $url = self::addBackslash(self::getCurrentPage());
 
-        return static::addBackslash($url);
+        if ($uri !== '/') {
+            
+            $url = trim(str_replace($uri, '', $url), '/');
+        }
+
+        return self::addBackslash($url);
     }
 
     /**
@@ -64,9 +67,16 @@ class Url {
      *
      * @since 1.0.0
      *
+     * @param string $url
+     *
      * @return string → http|https
      */
-    public static function getProtocol() {
+    public static function getProtocol($url = false) {
+
+        if ($url) {
+
+            return (preg_match('/^https/', $url)) ? 'https' : 'http';
+        }
 
         $protocol = strtolower($_SERVER['SERVER_PROTOCOL']);
 
@@ -82,11 +92,13 @@ class Url {
      *
      * @since 1.0.0
      *
+     * @param string $url
+     *
      * @return boolean
      */
-    public static function isSSL() {
+    public static function isSSL($url = false) {
 
-        return (static::getProtocol() === 'https');
+        return (self::getProtocol($url) === 'https');
     }
 
     /**
@@ -94,9 +106,18 @@ class Url {
      *
      * @since 1.0.0
      *
-     * @return string → server name
+     * @param string $url
+     *
+     * @return string|false → server name
      */
-    public static function getDomain() {
+    public static function getDomain($url = false) {
+
+        if ($url) {
+
+            preg_match('/([\w]+[.]){1,}[a-z]+/', $url, $matches);
+
+            return isset($matches[0]) ? $matches[0] : false;
+        }
 
         return $_SERVER['SERVER_NAME'];
     }
@@ -122,9 +143,11 @@ class Url {
      */
     public static function getUriMethods() {
 
-        $subfolder = trim(str_replace($_SERVER["DOCUMENT_ROOT"], '', getcwd()), '/');
+        $root = str_replace($_SERVER["DOCUMENT_ROOT"], '', getcwd());
 
-        return trim(str_replace($subfolder, '', static::getUri()), '/');
+        $subfolder = trim($root, '/');
+
+        return trim(str_replace($subfolder, '', self::getUri()), '/');
     }
 
     /**
@@ -144,13 +167,30 @@ class Url {
      *
      * @since 1.0.0
      *
-     * @param string $uri → url path
-     * 
-     * @return string → path/url/
+     * @param string $uri      → url path
+     * @param string $position → place where the backslash is placed
+     *
+     * @return string → path/url/ | /path/url | /path/url/
      */
-    public static function addBackslash($uri = null) {
+    public static function addBackslash($uri, $position = 'end') {
 
-        return (substr($uri, -1) === "/") ? $uri : $uri . "/";
+        switch ($position) {
+
+            case 'top':
+
+                return (substr($uri, 1) === '/') ? $uri : '/' . $uri;
+            
+            case 'end':
+                
+                return (substr($uri, -1) === '/') ? $uri : $uri . '/';
+
+            case 'both':
+
+                $uri = self::addBackslash($uri, 'top');
+                $uri = self::addBackslash($uri, 'end');
+
+                return $uri;
+        }
     }
     
     /**
@@ -207,7 +247,6 @@ class Url {
     /**
      * This function converts and url segment to an safe one.
      * For example: `test name @132` will be converted to `test-name--123`.
-     * Replace every character that isn't an letter or an number to an dash sign.
      * It will also return all letters in lowercase
      *
      * @since 1.0.0

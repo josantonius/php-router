@@ -1,6 +1,6 @@
 # PHP Router library
 
-[![Latest Stable Version](https://poser.pugx.org/josantonius/router/v/stable)](https://packagist.org/packages/josantonius/router) [![Total Downloads](https://poser.pugx.org/josantonius/router/downloads)](https://packagist.org/packages/josantonius/router) [![Latest Unstable Version](https://poser.pugx.org/josantonius/router/v/unstable)](https://packagist.org/packages/josantonius/router) [![License](https://poser.pugx.org/josantonius/router/license)](https://packagist.org/packages/josantonius/router)
+[![Latest Stable Version](https://poser.pugx.org/josantonius/router/v/stable)](https://packagist.org/packages/josantonius/router) [![Total Downloads](https://poser.pugx.org/josantonius/router/downloads)](https://packagist.org/packages/josantonius/router) [![Latest Unstable Version](https://poser.pugx.org/josantonius/router/v/unstable)](https://packagist.org/packages/josantonius/router) [![License](https://poser.pugx.org/josantonius/router/license)](https://packagist.org/packages/josantonius/router) [![Travis](https://travis-ci.org/Josantonius/PHP-Router.svg)](https://travis-ci.org/Josantonius/PHP-Router)
 
 [Versión en español](README-ES.md)
 
@@ -14,20 +14,11 @@ Library for handling routes.
 - [Available Methods](#available-methods)
 - [Usage](#usage)
 - [Tests](#tests)
+- [TODO](#-todo)
 - [Contribute](#contribute)
 - [Repository](#repository)
 - [Licensing](#licensing)
 - [Copyright](#copyright)
-
----
-
-<p align="center"><strong>Take a look at the code</strong></p>
-
-<p align="center">
-  <a href="https://youtu.be/hLw4usYo8CI" title="Take a look at the code">
-  	<img src="https://raw.githubusercontent.com/Josantonius/PHP-Algorithm/master/resources/youtube-thumbnail.jpg">
-  </a>
-</p>
 
 ---
 
@@ -90,31 +81,21 @@ Router::dispatch();
 
 ### Tests 
 
-To use the [test](tests) class, simply:
+To run [tests](tests/Router/Test) simply:
 
-```php
-<?php
-$loader = require __DIR__ . '/vendor/autoload.php';
+    $ git clone https://github.com/Josantonius/PHP-Router.git
+    
+    $ cd PHP-Router
 
-$loader->addPsr4('Josantonius\\Router\\Tests\\', __DIR__ . '/vendor/josantonius/router/tests');
+    $ phpunit
 
-use Josantonius\Router\Tests\RouterTest;
+### ☑ TODO
 
-```
-Available test methods in this library:
-
-```php
-RouterTest::testAddRoutes();
-RouterTest::testSetSingletonName();
-RouterTest::testExecuteRoutes();
-RouterTest::testGetRoute();
-RouterTest::testkeepLooking1();
-RouterTest::testkeepLooking2();
-RouterTest::testkeepLooking3();
-RouterTest::testDefineErrorCallback();
-```
+- [x] Create tests
+- [ ] Improve documentation
 
 ### Contribute
+
 1. Check for open issues or open a new issue to start a discussion around a bug or feature.
 1. Fork the repository on GitHub to start making your changes.
 1. Write one or more tests for the new feature or that expose the bug.

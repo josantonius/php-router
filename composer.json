@@ -1,6 +1,6 @@
 {
     "name":        "josantonius/router",
-    "version":     "1.0.5",
+    "version":     "1.0.6",
     "type":        "library",
     "description": "Library for handling routes.",
     "keywords": [
@@ -18,6 +18,8 @@
         }
     ],
     "support": {
+        "issues": "https://github.com/josantonius/php-router/issues",
+        "forum":  "http://stackoverflow.com/tags/josantonius/php-router",
         "source": "https://github.com/josantonius/php-router"
     },
     "config": {
@@ -26,21 +28,22 @@
     "minimum-stability": "stable",
     "require": {
         "php": "^5.6 || ^7.0",
-        "Josantonius/Url" : "^1.1.2"
+        "Josantonius/Url" : "^1.1.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.7.*"
     },
     "autoload": {
         "psr-4": {
-            "Josantonius\\Router\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Josantonius\\Router\\Tests\\": "tests/"
+            "Josantonius\\Router\\": "src/Router/"
         }
     },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }
