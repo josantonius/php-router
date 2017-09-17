@@ -187,7 +187,7 @@ class Url {
 
         return explode('?', $url)[0];
     }
-
+    
     /**
      * Get the server port.
      *
