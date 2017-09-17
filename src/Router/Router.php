@@ -2,8 +2,8 @@
 /**
  * Library for handling routes.
  * 
- * @author     Daveismyname - dave@daveismyname.com
  * @author     Josantonius  - hello@josantonius.com
+ * @author     Daveismyname - dave@daveismyname.com
  * @copyright  Copyright (c) 2017
  * @license    https://opensource.org/licenses/MIT - The MIT License (MIT)
  * @link       https://github.com/Josantonius/PHP-Router
@@ -67,15 +67,6 @@ class Router {
     public static $errorCallback = false;
 
     /**
-     * Requested route status.
-     *
-     * @since 1.0.0
-     *
-     * @var bool $foundRoute
-     */
-    public static $foundRoute = false;
-
-    /**
      * Set an uri.
      *
      * @since 1.0.0
@@ -89,16 +80,25 @@ class Router {
      *
      * @since 1.0.0
      *
-     * @var string
+     * @var string $_singleton
      */
     private static $_singleton = 'getInstance';
+
+    /**
+     * Response from called method.
+     *
+     * @since 1.0.6
+     *
+     * @var callable $response
+     */
+    public static $response;
 
     /**
      * Set route patterns.
      *
      * @since 1.0.0
      *
-     * @var null $uri
+     * @var array $patterns
      */
     public static $patterns = [
         ':any' => '[^/]+',
@@ -153,29 +153,44 @@ class Router {
     /**
      * Add routes.
      *
+     * @since 1.0.0
+     *
      * @param array $route
      *
-     * @since 1.0.0
+     * @uses string Url::addBackslash → add backslash if it doesn't exist
+     *
+     * @link https://github.com/Josantonius/PHP-Url
      *
      * @return boolean
      */
-    public static function addRoute($route) {
+    public static function addRoute($routes) {
 
-        return is_array(self::$routes = array_merge($route, self::$routes));
+        if (!is_array($routes)) { return false; }
+
+        foreach($routes as $route => $value) {
+            
+            self::$routes[Url::addBackslash($route)] = $value;
+        }
+
+        return true;
     }
 
     /**
      * Get routes.
      *
-     * @param array $route
-     *
      * @since 1.0.0
+     *
+     * @param string $route
+     *
+     * @uses string Url::addBackslash → add backslash if it doesn't exist
      *
      * @return array|false → route or false
      */
     public static function getRoute($route) {
 
-         return isset(self::$routes[$route]) ? self::$routes[$route] : false;
+        $route = Url::addBackslash($route);
+
+        return isset(self::$routes[$route]) ? self::$routes[$route] : false;
     }
 
     /**
@@ -225,34 +240,165 @@ class Router {
      */
     public static function dispatch() {
 
-        self::$uri = Url::getUriMethods();
-
-        self::_parseUrl();
-
-        self::$uri = Url::addBackslash(self::$uri);
-
         self::_routeValidator();
 
         self::$routes = str_replace('//', '/', self::$routes);
-
-        self::$foundRoute = false;
 
         if (in_array(self::$uri, self::$routes)) {
 
             return self::_checkRoutes();
         }
             
+        return self::_checkRegexRoutes() ?: self::_getErrorCallback();
+    }
+
+    /**
+     * Clean resources.
+     *
+     * @since 1.0.0
+     *
+     * @return void
+     */
+    private static function _cleanResources() {
+        
+        self::$callbacks = [];
+        self::$methods   = [];
+        self::$halts     = false;
+        self::$response  = false;
+    }
+
+    /**
+     * Validate route.
+     *
+     * @since 1.0.0
+     *
+     * @uses string Url::getUriMethods → remove subdirectories & get methods
+     * @uses string Url::setUrlParams  → return url without url params
+     * @uses string Url::addBackslash  → add backslash if it doesn't exist
+     *
+     * @return void
+     */
+    private static function _routeValidator() {
+
+        self::$uri = Url::getUriMethods();
+
+        self::$uri = Url::setUrlParams(self::$uri);
+
+        self::$uri = Url::addBackslash(self::$uri);
+
+        self::_cleanResources();
+        
+        if (self::getRoute(self::$uri)) {
+
+            self::any(self::$uri, self::$routes[self::$uri]);
+        }  
+    }
+
+    /**
+     * Check if route is defined without regex.
+     *
+     * @since 1.0.0
+     *
+     * @return callable|false
+     */
+    private static function _checkRoutes() {
+
+        $method = $_SERVER['REQUEST_METHOD'];
+
+        $route_pos = array_keys(self::$routes, self::$uri);
+
+        foreach ($route_pos as $route) {
+
+            $methodRoute = self::$methods[$route];
+
+            if ($methodRoute == $method || $methodRoute == 'ANY') {
+
+                if (!is_object($callback = self::$callbacks[$route])) {
+
+                    self::$response = self::invokeObject($callback);
+
+                } else {
+
+                    self::$response = call_user_func($callback);
+                }
+
+                if (!self::$halts) {
+
+                    return self::$response;
+                }
+
+                self::$halts--;
+            }
+        }
+
+        return self::$response;
+    }
+
+    /**
+     * Check if route is defined with regex.
+     *
+     * @since 1.0.0
+     *
+     * @uses string Url::addBackslash → add backslash if it doesn't exist
+     *
+     * @return callable|false
+     */
+    private static function _checkRegexRoutes() {
+
+        $pos = 0;
+        
         self::_getRegexRoutes();
-            
-        if ($response = self::_checkRegexRoutes()) {
 
-            return $response;
+        $method = $_SERVER['REQUEST_METHOD'];
+
+        $searches = array_keys(self::$patterns);
+
+        $replaces = array_values(self::$patterns);
+
+        foreach (self::$routes as $route) {
+
+            $route = str_replace($searches, $replaces, $route);
+
+            $route = Url::addBackslash($route);
+
+            if (preg_match('#^' . $route . '$#', self::$uri, $matched)) {
+
+                $methodRoute = self::$methods[$pos];
+
+                if ($methodRoute == $method || $methodRoute == 'ANY') {
+
+                    $matched = explode('/', trim($matched[0], '/'));
+
+                    array_shift($matched);
+
+                    if (!is_object(self::$callbacks[$pos])) {
+
+                        self::$response = self::invokeObject(
+                            self::$callbacks[$pos], 
+                            $matched
+                        );
+
+                    } else {
+
+                        self::$response = call_user_func_array(
+                            self::$callbacks[$pos],
+                            $matched
+                        );
+                    }
+
+                    if (!self::$halts) {
+                        
+                        return self::$response;
+                    }
+
+                    self::$halts--;
+                }
+            }
+
+            $pos++;
         }
 
-        if (!self::$foundRoute) {
-
-            return self::_getErrorCallback();
-        }
+        return self::$response;
     }
 
     /**
@@ -273,178 +419,6 @@ class Router {
                 Router::any($key, $value);
             }
         }
-    }
-
-    /**
-     * Parse query parameters.
-     *
-     * @since 1.0.0
-     *
-     * @return void
-     */
-    private static function _parseUrl() {
-
-        $query = '';
-
-        $data = array();
-
-        if (strpos(self::$uri, '&') > 0) {
-
-            $query = substr(self::$uri, strpos(self::$uri, '&') + 1);
-
-            self::$uri = substr(self::$uri, 0, strpos(self::$uri, '&'));
-
-            $data = explode('&', $query);
-
-            foreach ($data as $value) {
-
-                $params = explode('=', $value);
-
-                $data[] = array($params[0] => $params[1]);
-
-                if (!isset($_GET[$params[0]])) {
-
-                    $_GET[$params[0]] = $params[1];
-                }
-            }
-        }
-    }
-
-    /**
-     * Check if route is defined without regex.
-     *
-     * @since 1.0.0
-     *
-     * @return callable|false
-     */
-    private static function _checkRoutes() {
-
-        $response = false;
-
-        $method = $_SERVER['REQUEST_METHOD'];
-
-        $route_pos = array_keys(self::$routes, self::$uri);
-
-        foreach ($route_pos as $route) {
-
-            self::$foundRoute = false;
-
-            $methodRoute = self::$methods[$route];
-
-            if ($methodRoute == $method || $methodRoute == 'ANY') {
-
-                self::$foundRoute = true;
-
-                if (!is_object(self::$callbacks[$route])) {
-
-                    $response = self::invokeObject(self::$callbacks[$route]);
-
-                } else {
-
-                    $response = call_user_func(self::$callbacks[$route]);
-                }
-
-                if (!self::$halts && !self::$halts > 0) {
-
-                    return $response;
-                }
-
-                self::$halts--;
-            }
-        }
-
-        return $response;
-    }
-
-    /**
-     * Check if route is defined with regex.
-     *
-     * @since 1.0.0
-     *
-     * @return callable|false
-     */
-    private static function _checkRegexRoutes() {
-
-        $pos = 0;
-
-        $response = false;
-
-        $method = $_SERVER['REQUEST_METHOD'];
-
-        $searches = array_keys(self::$patterns);
-
-        $replaces = array_values(self::$patterns);
-
-        foreach (self::$routes as $route) {
-
-            self::$foundRoute = false;
-
-            $route = str_replace($searches, $replaces, $route);
-
-            $route = Url::addBackslash($route);
-
-            if (preg_match('#^' . $route . '$#', self::$uri, $matched)) {
-
-                $methodRoute = self::$methods[$pos];
-
-                if ($methodRoute == $method || $methodRoute == 'ANY') {
- 
-                    self::$foundRoute = true;
-
-                    $matched = explode('/', trim($matched[0], '/'));
-
-                    array_shift($matched);
-
-                    if (!is_object(self::$callbacks[$pos])) {
-
-                        $response = self::invokeObject(
-                            self::$callbacks[$pos], 
-                            $matched
-                        );
-
-                    } else {
-
-                        $response = call_user_func_array(
-                            self::$callbacks[$pos],
-                            $matched
-                        );
-                    }
-
-                    if (!self::$halts) {
-                        
-                        $response = false;
-                    }
-
-                    self::$halts--;
-                }
-            }
-
-            $pos++;
-        }
-
-        return $response;
-    }
-
-    /**
-     * Get error callback if route does not exists.
-     *
-     * @since 1.0.3
-     *
-     * @return callable
-     */
-    private static function _getErrorCallback() {
-
-        if (!self::$errorCallback) {
-
-            return false;
-        }
-
-        if (!is_object(self::$errorCallback)) {
-
-            return self::invokeObject(self::$errorCallback);
-        }
-
-        return call_user_func(self::$errorCallback);
     }
 
     /**
@@ -492,17 +466,28 @@ class Router {
     }
 
     /**
-     * Validate route.
+     * Get error callback if route does not exists.
      *
-     * @since 1.0.0
+     * @since 1.0.3
      *
-     * @return void
+     * @return callable
      */
-    private static function _routeValidator() {
+    private static function _getErrorCallback() {
 
-        if (self::getRoute(self::$uri)) {
+        $errorCallback = self::$errorCallback;
 
-            self::any(self::$uri, self::$routes[self::$uri]);
-        }  
+        self::$errorCallback = false;
+
+        if (!$errorCallback) {
+
+            return false;
+        }
+
+        if (!is_object($errorCallback)) {
+
+            return self::invokeObject($errorCallback);
+        }
+
+        return call_user_func($errorCallback);
     }
 }

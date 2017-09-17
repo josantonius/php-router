@@ -4,7 +4,7 @@
 
 * Unit tests supported by `PHPUnit` were added.
 
-* The repository was synchronized with Travis CI to implement continuous integration.
+* The repository was synchronized with `Travis CI` to implement continuous integration.
  
 * Added `Router/src/bootstrap.php` file
 
@@ -13,6 +13,8 @@
 * Added `Router/phpunit.xml.dist` file.
 * Added `Router/_config.yml` file.
 * Added `Router/.travis.yml` file.
+
+* Added   `Josantonius\Router\Router::_cleanResources()` method.
 
 * Deleted `Josantonius\Router\Tests\RouterTest` class.
 * Deleted `Josantonius\Router\Tests\RouterTest::testAddRoutes()` method.
@@ -25,7 +27,39 @@
 * Deleted `Josantonius\Router\Tests\RouterTest::testDefineErrorCallback()` method.
 
 * Added `Josantonius\Router\Test\RouterTest` class.
+* Added `Josantonius\Router\Test\RouterTest::testAddRoute()` method.
+* Added `Josantonius\Router\Test\RouterTest::testAddRouteWithEndBackslash()` method.
 * Added `Josantonius\Router\Test\RouterTest::testAddRoutes()` method.
+* Added `Josantonius\Router\Test\RouterTest::testAddWrongRoutes()` method.
+* Added `Josantonius\Router\Test\RouterTest::testGetRoute()` method.
+* Added `Josantonius\Router\Test\RouterTest::testGetRouteWithEndBackslash()` method.
+* Added `Josantonius\Router\Test\RouterTest::testGetWrongRoute()` method.
+* Added `Josantonius\Router\Test\RouterTest::testKeepLooking()` method.
+* Added `Josantonius\Router\Test\RouterTest::testKeepLookingUpToThreeCoincidences()` method.
+* Added `Josantonius\Router\Test\RouterTest::testNotKeepLooking()` method.
+* Added `Josantonius\Router\Test\RouterTest::testExecuteRoute()` method.
+* Added `Josantonius\Router\Test\RouterTest::testExecuteWrongRoute()` method.
+* Added `Josantonius\Router\Test\RouterTest::testDefineErrorCallback()` method.
+* Added `Josantonius\Router\Test\RouterTest::testSetSingletonName()` method.
+* Added `Josantonius\Router\Test\RouterTest::testSetSingletonNameError()` method.
+* Added `Josantonius\Router\Test\RouterTest::testExecuteWrongRouteWithCustomErrorCallback()` method.
+* Added `Josantonius\Router\Test\RouterTest::testAddRouteWithAllRegExp()` method.
+* Added `Josantonius\Router\Test\RouterTest::testExecuteRouteWithAllRegExp()` method.
+* Added `Josantonius\Router\Test\RouterTest::testAddRouteWithAnyRegExpAndParams()` method.
+* Added `Josantonius\Router\Test\RouterTest::testExecuteRouteWithAnyRegExpAndParams()` method.
+* Added `Josantonius\Router\Test\RouterTest::testAddRouteWithNumRegExpAndParams()` method.
+* Added `Josantonius\Router\Test\RouterTest::testExecuteRouteWithNumRegExpAndParams()` method.
+* Added `Josantonius\Router\Test\RouterTest::testAddRouteWithHexRegExpAndParams()` method.
+* Added `Josantonius\Router\Test\RouterTest::testExecuteRouteWithHexRegExpAndParams()` method.
+* Added `Josantonius\Router\Test\RouterTest::testAddRouteWithUuidV4RegExpAndParams()` method.
+* Added `Josantonius\Router\Test\RouterTest::testExecuteRouteWithUuidV4RegExpAndParams()` method.
+
+* Added `Josantonius\Router\Test\Example` class.
+* Added `Josantonius\Router\Test\Example::getInstance()` method.
+* Added `Josantonius\Router\Test\Example::newSingleton()` method.
+* Added `Josantonius\Router\Test\Example::services()` method.
+* Added `Josantonius\Router\Test\Example::error()` method.
+* Added `Josantonius\Router\Test\Example::blog()` method.
 
 ## 1.0.5 - 2017-07-16
 
@@ -47,16 +81,16 @@
 * Bugs fixed in dispatch() method.
 * Bugs fixed in _checkRoutes() method.
 * Bugs fixed in _checkRegexRoutes() method.
-
 * Now from the keepLooking() method, in addition to establishing whether to continue processing routes, it will be possible to indicate the number of routes to be processed.
 
 ## 1.0.3 - 2017-05-09
+
+* Bugs fixed in `dispatch()` and `_checkRegexRoutes()` methods.
 
 * Deleted `Josantonius\Router\Router::loadRegexRoutes()` method.
 * Added   `Josantonius\Router\Router::_getRegexRoutes()` method.
 * Added   `Josantonius\Router\Router::_getErrorCallback()` method.
 
-* Bugs fixed in dispatch() and _checkRegexRoutes() methods.
 
 ## 1.0.2 - 2017-03-18
 
