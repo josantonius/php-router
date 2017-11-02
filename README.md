@@ -170,7 +170,7 @@ $routes = [
 Router::add($routes);
 ```
 
-### - Execute route simulating the url http://localhost/services:
+### - Execute route simulating 'services':
 
 ```php
 Router::dispatch(); // Response from services method
@@ -184,7 +184,7 @@ Router::add([
 ]);
 ```
 
-### - Execute route simulating the url http://localhost/language/PHP/:
+### - Execute route simulating 'language/PHP/':
 
 ```php
 Router::dispatch(); // Response from services method
@@ -198,7 +198,7 @@ Router::add([
 ]);
 ```
 
-### - Execute route simulating the url http://localhost/blog/games/Minecraft/:
+### - Execute route simulating 'blog/games/Minecraft/':
 
 ```php
 Router::dispatch(); // Response from blog method: games | Minecraft
@@ -212,7 +212,7 @@ Router::add([
 ]);
 ```
 
-### - Execute route simulating url http://localhost/blog/development/1/:
+### - Execute route simulating 'blog/development/1/':
 
 ```php
 Router::dispatch(); // Response from blog method: development | 1
@@ -226,7 +226,7 @@ Router::add([
 ]);
 ```
 
-### - Execute route simulating url http://localhost/blog/color/e0a060/:
+### - Execute route simulating 'blog/color/e0a060/':
 
 ```php
 Router::dispatch(); // Response from blog method: color | e0a060
@@ -240,7 +240,7 @@ Router::add([
 ]);
 ```
 
-### - Execute route simulating url http://localhost/blog/uuid/11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000/:
+### - Execute route simulating 'blog/uuid/11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000/':
 
 ```php
 Router::dispatch(); // Response from blog method: uuid | 11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000
