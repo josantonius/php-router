@@ -155,7 +155,7 @@ use Josantonius\Router\Router;
 
 ```php
 Router::add([
-	'services' => 'Josantonius\Router\Example@services'
+    'services' => 'Josantonius\Router\Example@services'
 ]);
 ```
 
@@ -180,7 +180,7 @@ Router::dispatch(); // Response from services method
 
 ```php
 Router::add([
-	'blog/:all' => 'Josantonius\Router\Example@blog'
+    'blog/:all' => 'Josantonius\Router\Example@blog'
 ]);
 ```
 
@@ -194,7 +194,7 @@ Router::dispatch(); // Response from services method
 
 ```php
 Router::add([
-	'blog/:any/:any/' => 'Josantonius\Router\Example@blog',
+    'blog/:any/:any/' => 'Josantonius\Router\Example@blog',
 ]);
 ```
 
@@ -208,7 +208,7 @@ Router::dispatch(); // Response from blog method: games | Minecraft
 
 ```php
 Router::add([
-	blog/:any/:num/' => 'Josantonius\Router\Example@blog',
+    blog/:any/:num/' => 'Josantonius\Router\Example@blog',
 ]);
 ```
 
@@ -222,7 +222,7 @@ Router::dispatch(); // Response from blog method: development | 1
 
 ```php
 Router::add([
-	'blog/:any/:hex/' => 'Josantonius\Router\Example@blog',
+    'blog/:any/:hex/' => 'Josantonius\Router\Example@blog',
 ]);
 ```
 
@@ -236,7 +236,7 @@ Router::dispatch(); // Response from blog method: color | e0a060
 
 ```php
 Router::add([
-	'blog/:any/:uuidV4/' => 'Josantonius\Router\Example@blog',
+    'blog/:any/:uuidV4/' => 'Josantonius\Router\Example@blog',
 ]);
 ```
 
