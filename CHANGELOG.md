@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## 1.0.7 - 2017-11-02
+
+* Implemented `PSR-4 autoloader standard` from all library files.
+
+* Implemented `PSR-2 coding standard` from all library PHP files.
+
+* Implemented `PHPCS` to ensure that PHP code complies with `PSR2` code standards.
+
+* Implemented `Codacy` to automates code reviews and monitors code quality over time.
+
+* Implemented `Codecov` to coverage reports.
+
+* Added `Router/phpcs.ruleset.xml` file.
+
+* Deleted `Router/src/bootstrap.php` file.
+
+* Deleted `Router/tests/bootstrap.php` file.
+
+* Deleted `Router/vendor` folder.
+
+* Changed `Josantonius\Router\Test\RouterTest` class to  `Josantonius\Router\RouterTest` class.
+
+* Deleted `Josantonius\Router\Router::addRoute()` method.
+* Added `Josantonius\Router\Router::add()` method.
+
+* Deleted `Josantonius\Router\Router::getRoute()` method.
+* Added `Josantonius\Router\Router::getMethod()` method.
+
 ## 1.0.6 - 2017-09-14
 
 * Unit tests supported by `PHPUnit` were added.

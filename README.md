@@ -1,6 +1,6 @@
 # PHP Router library
 
-[![Latest Stable Version](https://poser.pugx.org/josantonius/router/v/stable)](https://packagist.org/packages/josantonius/router) [![Total Downloads](https://poser.pugx.org/josantonius/router/downloads)](https://packagist.org/packages/josantonius/router) [![Latest Unstable Version](https://poser.pugx.org/josantonius/router/v/unstable)](https://packagist.org/packages/josantonius/router) [![License](https://poser.pugx.org/josantonius/router/license)](https://packagist.org/packages/josantonius/router) [![Travis](https://travis-ci.org/Josantonius/PHP-Router.svg)](https://travis-ci.org/Josantonius/PHP-Router)
+[![Latest Stable Version](https://poser.pugx.org/josantonius/Router/v/stable)](https://packagist.org/packages/josantonius/Router) [![Latest Unstable Version](https://poser.pugx.org/josantonius/Router/v/unstable)](https://packagist.org/packages/josantonius/Router) [![License](https://poser.pugx.org/josantonius/Router/license)](LICENSE) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c2721e75cb664951864a53122c6d035b)](https://www.codacy.com/app/Josantonius/PHP-Router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Josantonius/PHP-Router&amp;utm_campaign=Badge_Grade) [![Total Downloads](https://poser.pugx.org/josantonius/Router/downloads)](https://packagist.org/packages/josantonius/Router) [![Travis](https://travis-ci.org/Josantonius/PHP-Router.svg)](https://travis-ci.org/Josantonius/PHP-Router) [![PSR2](https://img.shields.io/badge/PSR-2-1abc9c.svg)](http://www.php-fig.org/psr/psr-2/) [![PSR4](https://img.shields.io/badge/PSR-4-9b59b6.svg)](http://www.php-fig.org/psr/psr-4/) [![CodeCov](https://codecov.io/gh/Josantonius/PHP-Router/branch/master/graph/badge.svg)](https://codecov.io/gh/Josantonius/PHP-Router)
 
 [Versión en español](README-ES.md)
 
@@ -8,10 +8,10 @@ Library for handling routes.
 
 ---
 
-- [Installation](#installation)
 - [Requirements](#requirements)
-- [Quick Start and Examples](#quick-start-and-examples)
+- [Installation](#installation)
 - [Available Methods](#available-methods)
+- [Quick Start](#quick-start)
 - [Usage](#usage)
 - [Tests](#tests)
 - [TODO](#-todo)
@@ -22,79 +22,300 @@ Library for handling routes.
 
 ---
 
-### Installation
+## Requirements
 
-The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+This library is supported by **PHP versions 5.6** or higher and is compatible with **HHVM versions 3.0** or higher.
 
-To install PHP Router library, simply:
+## Installation
+
+The preferred way to install this extension is through [Composer](http://getcomposer.org/download/).
+
+To install **PHP Router library**, simply:
 
     $ composer require Josantonius/Router
 
-### Requirements
+The previous command will only install the necessary files, if you prefer to **download the entire source code** you can use:
 
-This library is supported by PHP versions 5.6 or higher and is compatible with HHVM versions 3.0 or higher.
+    $ composer require Josantonius/Router --prefer-source
 
-To use this library in HHVM (HipHop Virtual Machine) you will have to activate the scalar types. Add the following line "hhvm.php7.scalar_types = true" in your "/etc/hhvm/php.ini".
+You can also **clone the complete repository** with Git:
 
-### Quick Start and Examples
+  $ git clone https://github.com/Josantonius/PHP-Router.git
 
-To use this class, simply:
+Or **install it manually**:
 
-```php
-require __DIR__ . '/vendor/autoload.php';
+[Download Router.php](https://raw.githubusercontent.com/Josantonius/PHP-Router/master/src/Router.php):
 
-use Josantonius\Router\Router;
-```
-### Available Methods
+    $ wget https://raw.githubusercontent.com/Josantonius/PHP-Router/master/src/Router.php
+
+[Download Url.php](https://raw.githubusercontent.com/Josantonius/PHP-Url/master/src/Url.php):
+
+    $ wget https://raw.githubusercontent.com/Josantonius/PHP-Url/master/src/Url.php
+
+## Available Methods
 
 Available methods in this library:
 
+### - Set method name for use singleton pattern:
+
 ```php
-Router::__callstatic();
-Router::setSingletonName();
-Router::addRoute();
-Router::getRoute();
-Router::error();
-Router::keepLooking();
+Router::setSingletonName($method);
+```
+
+| Attribute | Description | Type | Required | Default
+| --- | --- | --- | --- | --- |
+| $method | Singleton method name. | string | Yes | |
+
+**# Return** (boolean)
+
+### - Add route/s:
+
+```php
+Router::add($routes);
+```
+
+| Attribute | Key | Description | Type | Required | Default
+| --- | --- | --- | --- | --- | --- |
+| $routes | | Route/s to add. | array | Yes | |
+|  | 0 | Route. | string | Yes | |
+|  | 1 | Method 'class@method'. | string | Yes | |
+
+**# Return** (boolean)
+
+### - Get method to call from URI:
+
+```php
+Router::getMethod($route);
+```
+
+| Attribute | Description | Type | Required | Default
+| --- | --- | --- | --- | --- |
+| $route | Route. | string | Yes | |
+
+**# Return** (string|null) → route or null
+
+### - Defines callback if route is not found:
+
+```php
+Router::error($callback);
+```
+
+| Attribute | Description | Type | Required | Default
+| --- | --- | --- | --- | --- |
+| $callback | Callback. | callable | Yes | |
+
+**# Return** (boolean true)
+
+### - Continue processing after match or stop it:
+
+Also can specify the number of total routes to process.
+
+```php
+Router::keepLooking($value);
+```
+
+| Attribute | Description | Type | Required | Default
+| --- | --- | --- | --- | --- |
+| $value | Value. | boolean|int | Yes | true |
+
+**# Return** (boolean true)
+
+### - Runs the callback for the given request:
+
+```php
 Router::dispatch();
 ```
-### Usage
 
-Example of use for this library:
+**# Return** (call response|false)
+
+## Quick Start
+
+To use this library with **Composer**:
 
 ```php
-<?php
 require __DIR__ . '/vendor/autoload.php';
 
 use Josantonius\Router\Router;
-
-$routes = [
-    '/'        => 'Namespace\Class\Example@render',
-    'home/'    => 'Namespace\Class\Example@render',
-    'contact/' => 'Namespace\Class\Example@render',
-];
-
-Router::addRoute($routes);
-
-Router::dispatch();
 ```
 
-### Tests 
+Or If you installed it **manually**, use it:
 
-To run [tests](tests/Router/Test) simply:
+```php
+require_once __DIR__ . '/Router.php';
+require_once __DIR__ . '/Url.php';
+
+use Josantonius\Router\Router;
+```
+
+## Usage
+
+[Example](tests/Example.php) of use for this library:
+
+### - Add route:
+
+```php
+Router::add([
+	'services' => 'Josantonius\Router\Example@services'
+]);
+```
+
+### - Add routes:
+
+```php
+$routes = [
+    'services' => 'Josantonius\Router\Example@services',
+    'home'     => 'Josantonius\Router\Example@home',
+];
+
+Router::add($routes);
+```
+
+### - Execute route simulating the url http://localhost/services:
+
+```php
+Router::dispatch(); // Response from services method
+```
+
+### - Add route with regular expressions (:all):
+
+```php
+Router::add([
+	'blog/:all' => 'Josantonius\Router\Example@blog'
+]);
+```
+
+### - Execute route simulating the url http://localhost/language/PHP/:
+
+```php
+Router::dispatch(); // Response from services method
+```
+
+### - Add route with regular expressions (:any) and params:
+
+```php
+Router::add([
+	'blog/:any/:any/' => 'Josantonius\Router\Example@blog',
+]);
+```
+
+### - Execute route simulating the url http://localhost/blog/games/Minecraft/:
+
+```php
+Router::dispatch(); // Response from blog method: games | Minecraft
+```
+
+### - Add route with regular expressions (:num) and params:
+
+```php
+Router::add([
+	blog/:any/:num/' => 'Josantonius\Router\Example@blog',
+]);
+```
+
+### - Execute route simulating url http://localhost/blog/development/1/:
+
+```php
+Router::dispatch(); // Response from blog method: development | 1
+```
+
+### - Add route with regular expressions (:hex) and params:
+
+```php
+Router::add([
+	'blog/:any/:hex/' => 'Josantonius\Router\Example@blog',
+]);
+```
+
+### - Execute route simulating url http://localhost/blog/color/e0a060/:
+
+```php
+Router::dispatch(); // Response from blog method: color | e0a060
+```
+
+### - Add route with regular expressions (:uuidV4) and params:
+
+```php
+Router::add([
+	'blog/:any/:uuidV4/' => 'Josantonius\Router\Example@blog',
+]);
+```
+
+### - Execute route simulating url http://localhost/blog/uuid/11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000/:
+
+```php
+Router::dispatch(); // Response from blog method: uuid | 11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000
+```
+
+### - Set method name for use singleton pattern:
+
+```php
+Router::setSingletonName('newSingleton');
+```
+
+### - Get method:
+
+```php
+Router::getMethod('services'); // Josantonius\Router\Example@services
+```
+
+### - Defines callback if route is not found:
+
+```php
+Router::error('Josantonius\Router\Example@error');
+```
+
+### - Execute wrong routes with custom error callback:
+
+```php
+Router::Router::dispatch('unknown'); // Response from error method
+```
+
+### - Continue processing after match:
+
+```php
+Router::keepLooking();
+```
+
+### - Keep Lookin up to three coincidences:
+
+```php
+Router::keepLooking(3);
+```
+
+### - Stopping processing after match:
+
+```php
+Router::keepLooking(false);
+```
+
+## Tests 
+
+To run [tests](tests) you just need [Composer](http://getcomposer.org/download/) and to execute the following:
 
     $ git clone https://github.com/Josantonius/PHP-Router.git
     
     $ cd PHP-Router
 
-    $ phpunit
+    $ composer install
 
-### ☑ TODO
+Run unit tests with [PHPUnit](https://phpunit.de/):
+
+    $ composer phpunit
+
+Run [PSR2](http://www.php-fig.org/psr/psr-2/) code standard tests with [PHPCS](https://github.com/squizlabs/PHP_CodeSniffer):
+
+    $ composer phpcs
+
+Run all previous tests:
+
+    $ composer tests
+
+## ☑ TODO
 
 - [x] Create tests
-- [ ] Improve documentation
+- [x] Improve documentation
 
-### Contribute
+## Contribute
 
 1. Check for open issues or open a new issue to start a discussion around a bug or feature.
 1. Fork the repository on GitHub to start making your changes.
@@ -104,15 +325,15 @@ To run [tests](tests/Router/Test) simply:
 
 This is intended for large and long-lived objects.
 
-### Repository
+## Repository
 
 All files in this repository were created and uploaded automatically with [Reposgit Creator](https://github.com/Josantonius/BASH-Reposgit).
 
-### Licensing
+## Licensing
 
 This project is licensed under **MIT license**. See the [LICENSE](LICENSE) file for more info.
 
-### Copyright
+## Copyright
 
 2017 Josantonius, [josantonius.com](https://josantonius.com/)
 
