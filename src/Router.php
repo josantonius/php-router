@@ -9,7 +9,6 @@
  * @link      https://github.com/Josantonius/PHP-Router
  * @since     1.0.0
  */
-
 namespace Josantonius\Router;
 
 use Josantonius\Url\Url;
@@ -26,7 +25,7 @@ class Router
      *
      * @since 1.0.0
      *
-     * @var boolean $halts
+     * @var bool
      */
     public static $halts = false;
 
@@ -35,7 +34,7 @@ class Router
      *
      * @since 1.0.0
      *
-     * @var array $routes
+     * @var array
      */
     public static $routes = [];
 
@@ -44,7 +43,7 @@ class Router
      *
      * @since 1.0.0
      *
-     * @var array $methods
+     * @var array
      */
     public static $methods = [];
 
@@ -53,7 +52,7 @@ class Router
      *
      * @since 1.0.0
      *
-     * @var array $callbacks
+     * @var array
      */
     public static $callbacks = [];
 
@@ -62,7 +61,7 @@ class Router
      *
      * @since 1.0.0
      *
-     * @var bool|int $errorCallback
+     * @var bool|int
      */
     public static $errorCallback = false;
 
@@ -71,25 +70,16 @@ class Router
      *
      * @since 1.0.0
      *
-     * @var null $uri
+     * @var null
      */
     public static $uri;
-
-    /**
-     * Method name to use the singleton pattern and just create an instance.
-     *
-     * @since 1.0.0
-     *
-     * @var string $singleton
-     */
-    private static $singleton = 'getInstance';
 
     /**
      * Response from called method.
      *
      * @since 1.0.6
      *
-     * @var callable $response
+     * @var callable
      */
     public static $response;
 
@@ -98,15 +88,24 @@ class Router
      *
      * @since 1.0.0
      *
-     * @var array $patterns
+     * @var array
      */
     public static $patterns = [
-        ':any'    => '[^/]+',
-        ':num'    => '-?[0-9]+',
-        ':all'    => '.*',
-        ':hex'    => '[[:xdigit:]]+',
+        ':any' => '[^/]+',
+        ':num' => '-?[0-9]+',
+        ':all' => '.*',
+        ':hex' => '[[:xdigit:]]+',
         ':uuidV4' => '\w{8}-\w{4}-\w{4}-\w{4}-\w{12}',
     ];
+
+    /**
+     * Method name to use the singleton pattern and just create an instance.
+     *
+     * @since 1.0.0
+     *
+     * @var string
+     */
+    private static $singleton = 'getInstance';
 
     /**
      * Defines a route with or without callback and method.
@@ -115,8 +114,6 @@ class Router
      *
      * @param string $method
      * @param array  $params
-     *
-     * @return void
      */
     public static function __callstatic($method, $params)
     {
@@ -136,11 +133,11 @@ class Router
      *
      * @param string $method → singleton method name
      *
-     * @return boolean
+     * @return bool
      */
     public static function setSingletonName($method)
     {
-        if (!is_string($method) || empty($method)) {
+        if (! is_string($method) || empty($method)) {
             return false;
         }
 
@@ -154,19 +151,19 @@ class Router
      *
      * @since 1.0.0
      *
-     * @param array  $routes    → routes to add
-     *        string $routes[0] → route
-     *        string $routes[1] → class@method
+     * @param array $routes → routes to add
+     *                      string $routes[0] → route
+     *                      string $routes[1] → class@method
      *
-     * @uses string Url::addBackslash → add backslash if it doesn't exist
+     * @uses \string Url::addBackslash → add backslash if it doesn't exist
      *
      * @link https://github.com/Josantonius/PHP-Url
      *
-     * @return boolean
+     * @return bool
      */
     public static function add($routes)
     {
-        if (!is_array($routes)) {
+        if (! is_array($routes)) {
             return false;
         }
 
@@ -184,7 +181,7 @@ class Router
      *
      * @param string $route
      *
-     * @uses string Url::addBackslash → add backslash if it doesn't exist
+     * @uses \string Url::addBackslash → add backslash if it doesn't exist
      *
      * @return string|null → route or null
      */
@@ -202,7 +199,7 @@ class Router
      *
      * @param callable $callback
      *
-     * @return boolean true
+     * @return bool true
      */
     public static function error($callback)
     {
@@ -218,13 +215,13 @@ class Router
      *
      * @since 1.0.4
      *
-     * @param boolean|int $value
+     * @param bool|int $value
      *
-     * @return boolean true
+     * @return bool true
      */
     public static function keepLooking($value = true)
     {
-        $value = (!is_bool($value) || !is_int($value)) ? false : true;
+        $value = (! is_bool($value) || ! is_int($value)) ? false : true;
 
         $value = (is_int($value) && $value > 0) ? $value - 1 : $value;
 
@@ -246,7 +243,7 @@ class Router
 
         self::$routes = str_replace('//', '/', self::$routes);
 
-        if (in_array(self::$uri, self::$routes)) {
+        if (in_array(self::$uri, self::$routes, true)) {
             return self::checkRoutes();
         }
 
@@ -254,18 +251,58 @@ class Router
     }
 
     /**
-     * Clean resources.
+     * Call object and instantiate.
+     *
+     * By default it will look for the 'getInstance' method to use singleton
+     * pattern and create a single instance of the class. If it does not
+     * exist it will create a new object.
+     *
+     * @see setSingletonName() for change the method name.
      *
      * @since 1.0.0
      *
-     * @return void
+     * @param object $callback
+     * @param array  $matched  → array of matched parameters
+     *
+     * @return callable|false
+     */
+    protected static function invokeObject($callback, $matched = null)
+    {
+        $last = explode('/', $callback);
+        $last = end($last);
+
+        $segments = explode('@', $last);
+
+        $class = $segments[0];
+        $method = $segments[1];
+        $matched = $matched ? $matched : [];
+
+        if (method_exists($class, self::$singleton)) {
+            $instance = call_user_func([$class, self::$singleton]);
+
+            return call_user_func_array([$instance, $method], $matched);
+        }
+
+        if (class_exists($class)) {
+            $instance = new $class;
+
+            return call_user_func_array([$instance, $method], $matched);
+        }
+
+        return false;
+    }
+
+    /**
+     * Clean resources.
+     *
+     * @since 1.0.0
      */
     private static function cleanResources()
     {
         self::$callbacks = [];
-        self::$methods   = [];
-        self::$halts     = false;
-        self::$response  = false;
+        self::$methods = [];
+        self::$halts = false;
+        self::$response = false;
     }
 
     /**
@@ -273,11 +310,9 @@ class Router
      *
      * @since 1.0.0
      *
-     * @uses string Url::getUriMethods → remove subdirectories & get methods
-     * @uses string Url::setUrlParams  → return url without url params
-     * @uses string Url::addBackslash  → add backslash if it doesn't exist
-     *
-     * @return void
+     * @uses \string Url::getUriMethods → remove subdirectories & get methods
+     * @uses \string Url::setUrlParams  → return url without url params
+     * @uses \string Url::addBackslash  → add backslash if it doesn't exist
      */
     private static function routeValidator()
     {
@@ -305,19 +340,19 @@ class Router
     {
         $method = $_SERVER['REQUEST_METHOD'];
 
-        $route_pos = array_keys(self::$routes, self::$uri);
+        $route_pos = array_keys(self::$routes, self::$uri, true);
 
         foreach ($route_pos as $route) {
             $methodRoute = self::$methods[$route];
 
             if ($methodRoute == $method || $methodRoute == 'ANY') {
-                if (!is_object($callback = self::$callbacks[$route])) {
+                if (! is_object($callback = self::$callbacks[$route])) {
                     self::$response = self::invokeObject($callback);
                 } else {
                     self::$response = call_user_func($callback);
                 }
 
-                if (!self::$halts) {
+                if (! self::$halts) {
                     return self::$response;
                 }
 
@@ -333,7 +368,7 @@ class Router
      *
      * @since 1.0.0
      *
-     * @uses string Url::addBackslash → add backslash if it doesn't exist
+     * @uses \string Url::addBackslash → add backslash if it doesn't exist
      *
      * @return callable|false
      */
@@ -343,7 +378,7 @@ class Router
 
         self::getRegexRoutes();
 
-        $method   = $_SERVER['REQUEST_METHOD'];
+        $method = $_SERVER['REQUEST_METHOD'];
         $searches = array_keys(self::$patterns);
         $replaces = array_values(self::$patterns);
 
@@ -359,7 +394,7 @@ class Router
 
                     array_shift($matched);
 
-                    if (!is_object(self::$callbacks[$pos])) {
+                    if (! is_object(self::$callbacks[$pos])) {
                         self::$response = self::invokeObject(
                             self::$callbacks[$pos],
                             $matched
@@ -371,7 +406,7 @@ class Router
                         );
                     }
 
-                    if (!self::$halts) {
+                    if (! self::$halts) {
                         return self::$response;
                     }
 
@@ -389,8 +424,6 @@ class Router
      * Load routes with regular expressions if the route is not found.
      *
      * @since 1.0.3
-     *
-     * @return void
      */
     private static function getRegexRoutes()
     {
@@ -398,49 +431,9 @@ class Router
             unset(self::$routes[$key]);
 
             if (strpos($key, ':') !== false) {
-                Router::any($key, $value);
+                self::any($key, $value);
             }
         }
-    }
-
-    /**
-     * Call object and instantiate.
-     *
-     * By default it will look for the 'getInstance' method to use singleton
-     * pattern and create a single instance of the class. If it does not
-     * exist it will create a new object.
-     *
-     * @see setSingletonName() for change the method name.
-     *
-     * @since 1.0.0
-     *
-     * @param object $callback
-     * @param array  $matched  → array of matched parameters
-     *
-     * @return callable|false
-     */
-    protected static function invokeObject($callback, $matched = null)
-    {
-        $last = explode('/', $callback);
-        $last = end($last);
-
-        $segments = explode('@', $last);
-
-        $class   = $segments[0];
-        $method  = $segments[1];
-        $matched = $matched ? $matched : [];
-
-        if (method_exists($class, self::$singleton)) {
-            $instance = call_user_func([$class, self::$singleton]);
-            return call_user_func_array([$instance, $method], $matched);
-        }
-
-        if (class_exists($class)) {
-            $instance = new $class;
-            return call_user_func_array([$instance, $method], $matched);
-        }
-
-        return false;
     }
 
     /**
@@ -456,11 +449,11 @@ class Router
 
         self::$errorCallback = false;
 
-        if (!$errorCallback) {
+        if (! $errorCallback) {
             return false;
         }
 
-        if (!is_object($errorCallback)) {
+        if (! is_object($errorCallback)) {
             return self::invokeObject($errorCallback);
         }
 

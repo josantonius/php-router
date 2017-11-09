@@ -8,7 +8,6 @@
  * @link      https://github.com/Josantonius/PHP-Router
  * @since     1.0.7
  */
-
 namespace Josantonius\Router;
 
 /**
