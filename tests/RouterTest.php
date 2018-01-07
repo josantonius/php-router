@@ -176,9 +176,11 @@ final class RouterTest extends TestCase
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
+        $response = $router::dispatch();
+        
         $this->assertContains(
             'Response from services method',
-            $router::dispatch()
+            $response
         );
     }
 
