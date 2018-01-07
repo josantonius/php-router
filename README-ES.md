@@ -265,7 +265,7 @@ Router::error('Josantonius\Router\Example@error');
 ### - Ejecutar ruta incorrecta con método de error personalizado:
 
 ```php
-Router::Router::dispatch('unknown'); // Response from error method
+Router::dispatch('unknown'); // Response from error method
 ```
 
 ### - Continuar procesando después de encontrar coincidencia:

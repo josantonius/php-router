@@ -265,7 +265,7 @@ Router::error('Josantonius\Router\Example@error');
 ### - Execute wrong routes with custom error callback:
 
 ```php
-Router::Router::dispatch('unknown'); // Response from error method
+Router::dispatch('unknown'); // Response from error method
 ```
 
 ### - Continue processing after match:
