@@ -44,11 +44,9 @@ You can also **clone the complete repository** with Git:
 
 Or **install it manually**:
 
-[Download Router.php](https://raw.githubusercontent.com/Josantonius/PHP-Router/master/src/Router.php):
+Download [Router.php](https://raw.githubusercontent.com/Josantonius/PHP-Router/master/src/Router.php) and [Url.php](https://raw.githubusercontent.com/Josantonius/PHP-Url/master/src/Url.php):
 
     $ wget https://raw.githubusercontent.com/Josantonius/PHP-Router/master/src/Router.php
-
-[Download Url.php](https://raw.githubusercontent.com/Josantonius/PHP-Url/master/src/Url.php):
 
     $ wget https://raw.githubusercontent.com/Josantonius/PHP-Url/master/src/Url.php
 
