@@ -178,7 +178,7 @@ final class RouterTest extends TestCase
 
         $this->assertContains(
             'Response from services method',
-            $router::dispatch()
+            $router->dispatch()
         );
     }
 
@@ -191,7 +191,7 @@ final class RouterTest extends TestCase
 
         $_SERVER['REQUEST_URI'] = 'unknown';
 
-        $this->assertFalse($router::dispatch());
+        $this->assertFalse($router->dispatch());
     }
 
     /**
