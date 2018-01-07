@@ -131,7 +131,7 @@ class Router
      *                      string $routes[0] → route
      *                      string $routes[1] → class@method
      *
-     * @uses \string Url::addBackslash → add backslash if it doesn't exist
+     * @uses string Url::addBackSlash → add backslash if it doesn't exist
      *
      * @link https://github.com/Josantonius/PHP-Url
      *
@@ -144,7 +144,7 @@ class Router
         }
 
         foreach ($routes as $route => $value) {
-            self::$routes[Url::addBackslash($route)] = $value;
+            self::$routes[Url::addBackSlash($route)] = $value;
         }
 
         return true;
@@ -155,13 +155,13 @@ class Router
      *
      * @param string $route
      *
-     * @uses \string Url::addBackslash → add backslash if it doesn't exist
+     * @uses \string Url::addBackSlash → add backslash if it doesn't exist
      *
      * @return string|null → route or null
      */
     public static function getMethod($route)
     {
-        $route = Url::addBackslash($route);
+        $route = Url::addBackSlash($route);
 
         return isset(self::$routes[$route]) ? self::$routes[$route] : null;
     }
@@ -276,7 +276,7 @@ class Router
      *
      * @uses \string Url::getUriMethods → remove subdirectories & get methods
      * @uses \string Url::setUrlParams  → return url without url params
-     * @uses \string Url::addBackslash  → add backslash if it doesn't exist
+     * @uses \string Url::addBackSlash  → add backslash if it doesn't exist
      */
     private static function routeValidator()
     {
@@ -284,7 +284,7 @@ class Router
 
         self::$uri = Url::setUrlParams(self::$uri);
 
-        self::$uri = Url::addBackslash(self::$uri);
+        self::$uri = Url::addBackSlash(self::$uri);
 
         self::cleanResources();
 
@@ -328,7 +328,7 @@ class Router
     /**
      * Check if route is defined with regex.
      *
-     * @uses \string Url::addBackslash → add backslash if it doesn't exist
+     * @uses \string Url::addBackSlash → add backslash if it doesn't exist
      *
      * @return callable|false
      */
@@ -344,7 +344,7 @@ class Router
 
         foreach (self::$routes as $route) {
             $route = str_replace($searches, $replaces, $route);
-            $route = Url::addBackslash($route);
+            $route = Url::addBackSlash($route);
 
             if (preg_match('#^' . $route . '$#', self::$uri, $matched)) {
                 $methodRoute = self::$methods[$pos];
