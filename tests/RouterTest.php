@@ -178,7 +178,7 @@ final class RouterTest extends TestCase
 
         $this->assertContains(
             'Response from services method',
-            $router->dispatch()
+            $this->Router->dispatch()
         );
     }
 
@@ -191,7 +191,7 @@ final class RouterTest extends TestCase
 
         $_SERVER['REQUEST_URI'] = 'unknown';
 
-        $this->assertFalse($router->dispatch());
+        $this->assertFalse($router::dispatch());
     }
 
     /**
@@ -264,7 +264,7 @@ final class RouterTest extends TestCase
 
         $this->assertContains(
             'Response from blog method: language | PHP',
-            $router::dispatch()
+            $this->Router->dispatch()
         );
     }
 
@@ -293,7 +293,7 @@ final class RouterTest extends TestCase
 
         $this->assertContains(
             'Response from blog method: games | Minecraft',
-            $router::dispatch()
+            $this->Router->dispatch()
         );
     }
 
@@ -322,7 +322,7 @@ final class RouterTest extends TestCase
 
         $this->assertContains(
             'Response from blog method: development | 1',
-            $router::dispatch()
+            $this->Router->dispatch()
         );
     }
 
@@ -351,7 +351,7 @@ final class RouterTest extends TestCase
 
         $this->assertContains(
             'Response from blog method: color | e0a060',
-            $router::dispatch()
+            $this->Router->dispatch()
         );
     }
 
@@ -384,7 +384,7 @@ final class RouterTest extends TestCase
 
         $this->assertContains(
             'Response from blog method: uuid | ' . $uuid,
-            $router::dispatch()
+            $this->Router->dispatch()
         );
     }
 }
