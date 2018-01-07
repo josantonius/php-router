@@ -170,8 +170,6 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRoute()
     {
-        $router = $this->Router;
-
         $_SERVER['REQUEST_URI'] = 'services';
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -258,8 +256,6 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRouteWithAllRegExp()
     {
-        $router = $this->Router;
-
         $_SERVER['REQUEST_URI'] = 'blog/language/PHP/';
 
         $this->assertContains(
@@ -287,8 +283,6 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRouteWithAnyRegExpAndParams()
     {
-        $router = $this->Router;
-
         $_SERVER['REQUEST_URI'] = 'blog/games/Minecraft/';
 
         $this->assertContains(
@@ -316,8 +310,6 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRouteWithNumRegExpAndParams()
     {
-        $router = $this->Router;
-
         $_SERVER['REQUEST_URI'] = 'blog/development/1/';
 
         $this->assertContains(
@@ -345,8 +337,6 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRouteWithHexRegExpAndParams()
     {
-        $router = $this->Router;
-
         $_SERVER['REQUEST_URI'] = 'blog/color/e0a060/';
 
         $this->assertContains(
@@ -376,8 +366,6 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRouteWithUuidV4RegExpAndParams()
     {
-        $router = $this->Router;
-
         $uuid = '11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000';
 
         $_SERVER['REQUEST_URI'] = 'blog/uuid/' . $uuid;
