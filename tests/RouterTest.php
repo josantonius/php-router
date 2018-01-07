@@ -3,7 +3,7 @@
  * Library for handling routes.
  *
  * @author    Josantonius  - <hello@josantonius.com>
- * @copyright 2017 (c) Josantonius - PHP-Router
+ * @copyright 2016 - 2018 (c) Josantonius - PHP-Router
  * @license   https://opensource.org/licenses/MIT - The MIT License (MIT)
  * @link      https://github.com/Josantonius/PHP-Router
  * @since     1.0.6
@@ -53,9 +53,11 @@ final class RouterTest extends TestCase
      */
     public function testAddRoute()
     {
+        $router = $this->Router;
+
         $route = ['services' => 'Josantonius\Router\Example@services'];
 
-        $this->assertTrue($this->Router->add($route));
+        $this->assertTrue($router::add($route));
     }
 
     /**
@@ -63,9 +65,11 @@ final class RouterTest extends TestCase
      */
     public function testAddRouteWithEndBackslash()
     {
+        $router = $this->Router;
+
         $route = ['services/' => 'Josantonius\Router\Example@services'];
 
-        $this->assertTrue($this->Router->add($route));
+        $this->assertTrue($router::add($route));
     }
 
     /**
@@ -73,12 +77,14 @@ final class RouterTest extends TestCase
      */
     public function testAddRoutes()
     {
+        $router = $this->Router;
+
         $routes = [
             'services' => 'Josantonius\Router\Example@services',
             'home' => 'Josantonius\Router\Example@home',
         ];
 
-        $this->assertTrue($this->Router->add($routes));
+        $this->assertTrue($router::add($routes));
     }
 
     /**
@@ -86,9 +92,11 @@ final class RouterTest extends TestCase
      */
     public function testAddWrongRoutes()
     {
+        $router = $this->Router;
+
         $routes = 'services/';
 
-        $this->assertFalse($this->Router->add($routes));
+        $this->assertFalse($router::add($routes));
     }
 
     /**
@@ -96,9 +104,11 @@ final class RouterTest extends TestCase
      */
     public function testGetMethod()
     {
+        $router = $this->Router;
+
         $this->assertContains(
             'Josantonius\Router\Example@services',
-            $this->Router->getMethod('services')
+            $router::getMethod('services')
         );
     }
 
@@ -107,9 +117,11 @@ final class RouterTest extends TestCase
      */
     public function testGetMethodWithEndBackslash()
     {
+        $router = $this->Router;
+
         $this->assertContains(
             'Josantonius\Router\Example@services',
-            $this->Router->getMethod('services/')
+            $router::getMethod('services/')
         );
     }
 
@@ -118,7 +130,9 @@ final class RouterTest extends TestCase
      */
     public function testGetMethodFromWrongRoute()
     {
-        $this->assertNull($this->Router->getMethod('?????'));
+        $router = $this->Router;
+
+        $this->assertNull($router::getMethod('?????'));
     }
 
     /**
@@ -126,7 +140,9 @@ final class RouterTest extends TestCase
      */
     public function testKeepLooking()
     {
-        $this->assertTrue($this->Router->keepLooking());
+        $router = $this->Router;
+
+        $this->assertTrue($router::keepLooking());
     }
 
     /**
@@ -134,7 +150,9 @@ final class RouterTest extends TestCase
      */
     public function testKeepLookingUpToThreeCoincidences()
     {
-        $this->assertTrue($this->Router->keepLooking(3));
+        $router = $this->Router;
+
+        $this->assertTrue($router::keepLooking(3));
     }
 
     /**
@@ -142,7 +160,9 @@ final class RouterTest extends TestCase
      */
     public function testNotKeepLooking()
     {
-        $this->assertTrue($this->Router->keepLooking(false));
+        $router = $this->Router;
+
+        $this->assertTrue($router::keepLooking(false));
     }
 
     /**
@@ -150,13 +170,15 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRoute()
     {
+        $router = $this->Router;
+
         $_SERVER['REQUEST_URI'] = 'services';
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
         $this->assertContains(
             'Response from services method',
-            $this->Router->dispatch()
+            $router::dispatch()
         );
     }
 
@@ -165,9 +187,11 @@ final class RouterTest extends TestCase
      */
     public function testExecuteWrongRoute()
     {
+        $router = $this->Router;
+
         $_SERVER['REQUEST_URI'] = 'unknown';
 
-        $this->assertFalse($this->Router->dispatch());
+        $this->assertFalse($router::dispatch());
     }
 
     /**
@@ -175,8 +199,10 @@ final class RouterTest extends TestCase
      */
     public function testDefineErrorCallback()
     {
+        $router = $this->Router;
+
         $this->assertTrue(
-            $this->Router->error('Josantonius\Router\Example@error')
+            $router::error('Josantonius\Router\Example@error')
         );
     }
 
@@ -185,7 +211,9 @@ final class RouterTest extends TestCase
      */
     public function testSetSingletonName()
     {
-        $this->assertTrue($this->Router->setSingletonName('newSingleton'));
+        $router = $this->Router;
+
+        $this->assertTrue($router::setSingletonName('newSingleton'));
     }
 
     /**
@@ -193,7 +221,9 @@ final class RouterTest extends TestCase
      */
     public function testSetSingletonNameError()
     {
-        $this->assertFalse($this->Router->setSingletonName(''));
+        $router = $this->Router;
+
+        $this->assertFalse($router::setSingletonName(''));
     }
 
     /**
@@ -201,9 +231,11 @@ final class RouterTest extends TestCase
      */
     public function testExecuteWrongRouteWithCustomErrorCallback()
     {
+        $router = $this->Router;
+
         $this->assertContains(
             'Response from error method',
-            $this->Router->dispatch()
+            $router::dispatch()
         );
     }
 
@@ -212,11 +244,13 @@ final class RouterTest extends TestCase
      */
     public function testAddRouteWithAllRegExp()
     {
+        $router = $this->Router;
+
         $route = [
             'blog/:all' => 'Josantonius\Router\Example@blog',
         ];
 
-        $this->assertTrue($this->Router->add($route));
+        $this->assertTrue($router::add($route));
     }
 
     /**
@@ -224,11 +258,13 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRouteWithAllRegExp()
     {
+        $router = $this->Router;
+
         $_SERVER['REQUEST_URI'] = 'blog/language/PHP/';
 
         $this->assertContains(
             'Response from blog method: language | PHP',
-            $this->Router->dispatch()
+            $router::dispatch()
         );
     }
 
@@ -237,11 +273,13 @@ final class RouterTest extends TestCase
      */
     public function testAddRouteWithAnyRegExpAndParams()
     {
+        $router = $this->Router;
+
         $route = [
             'blog/:any/:any/' => 'Josantonius\Router\Example@blog',
         ];
 
-        $this->assertTrue($this->Router->add($route));
+        $this->assertTrue($router::add($route));
     }
 
     /**
@@ -249,11 +287,13 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRouteWithAnyRegExpAndParams()
     {
+        $router = $this->Router;
+
         $_SERVER['REQUEST_URI'] = 'blog/games/Minecraft/';
 
         $this->assertContains(
             'Response from blog method: games | Minecraft',
-            $this->Router->dispatch()
+            $router::dispatch()
         );
     }
 
@@ -262,11 +302,13 @@ final class RouterTest extends TestCase
      */
     public function testAddRouteWithNumRegExpAndParams()
     {
+        $router = $this->Router;
+
         $route = [
             'blog/:any/:num/' => 'Josantonius\Router\Example@blog',
         ];
 
-        $this->assertTrue($this->Router->add($route));
+        $this->assertTrue($router::add($route));
     }
 
     /**
@@ -274,11 +316,13 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRouteWithNumRegExpAndParams()
     {
+        $router = $this->Router;
+
         $_SERVER['REQUEST_URI'] = 'blog/development/1/';
 
         $this->assertContains(
             'Response from blog method: development | 1',
-            $this->Router->dispatch()
+            $router::dispatch()
         );
     }
 
@@ -287,11 +331,13 @@ final class RouterTest extends TestCase
      */
     public function testAddRouteWithHexRegExpAndParams()
     {
+        $router = $this->Router;
+
         $route = [
             'blog/:any/:hex/' => 'Josantonius\Router\Example@blog',
         ];
 
-        $this->assertTrue($this->Router->add($route));
+        $this->assertTrue($router::add($route));
     }
 
     /**
@@ -299,11 +345,13 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRouteWithHexRegExpAndParams()
     {
+        $router = $this->Router;
+
         $_SERVER['REQUEST_URI'] = 'blog/color/e0a060/';
 
         $this->assertContains(
             'Response from blog method: color | e0a060',
-            $this->Router->dispatch()
+            $router::dispatch()
         );
     }
 
@@ -312,11 +360,13 @@ final class RouterTest extends TestCase
      */
     public function testAddRouteWithUuidV4RegExpAndParams()
     {
+        $router = $this->Router;
+
         $route = [
             'blog/:any/:uuidV4/' => 'Josantonius\Router\Example@blog',
         ];
 
-        $this->assertTrue($this->Router->add($route));
+        $this->assertTrue($router::add($route));
     }
 
     /**
@@ -326,13 +376,15 @@ final class RouterTest extends TestCase
      */
     public function testExecuteRouteWithUuidV4RegExpAndParams()
     {
+        $router = $this->Router;
+
         $uuid = '11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000';
 
         $_SERVER['REQUEST_URI'] = 'blog/uuid/' . $uuid;
 
         $this->assertContains(
             'Response from blog method: uuid | ' . $uuid,
-            $this->Router->dispatch()
+            $router::dispatch()
         );
     }
 }
