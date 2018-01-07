@@ -4,7 +4,7 @@
  *
  * @author    Josantonius  - <hello@josantonius.com>
  * @author    Daveismyname - <dave@daveismyname.com>
- * @copyright 2017 - 2018 (c) Josantonius - PHP-Router
+ * @copyright 2017 (c) Josantonius - PHP-Router
  * @license   https://opensource.org/licenses/MIT - The MIT License (MIT)
  * @link      https://github.com/Josantonius/PHP-Router
  * @since     1.0.0
@@ -15,11 +15,15 @@ use Josantonius\Url\Url;
 
 /**
  * Route handler.
+ *
+ * @since 1.0.0
  */
 class Router
 {
     /**
      * If true - do not process other routes when match is found.
+     *
+     * @since 1.0.0
      *
      * @var bool
      */
@@ -28,12 +32,16 @@ class Router
     /**
      * Array of routes.
      *
+     * @since 1.0.0
+     *
      * @var array
      */
     public static $routes = [];
 
     /**
      * Array of methods.
+     *
+     * @since 1.0.0
      *
      * @var array
      */
@@ -42,6 +50,8 @@ class Router
     /**
      * Array of callbacks.
      *
+     * @since 1.0.0
+     *
      * @var array
      */
     public static $callbacks = [];
@@ -49,12 +59,16 @@ class Router
     /**
      * Set an error callback.
      *
+     * @since 1.0.0
+     *
      * @var bool|int
      */
     public static $errorCallback = false;
 
     /**
      * Set an uri.
+     *
+     * @since 1.0.0
      *
      * @var null
      */
@@ -72,6 +86,8 @@ class Router
     /**
      * Set route patterns.
      *
+     * @since 1.0.0
+     *
      * @var array
      */
     public static $patterns = [
@@ -85,12 +101,16 @@ class Router
     /**
      * Method name to use the singleton pattern and just create an instance.
      *
+     * @since 1.0.0
+     *
      * @var string
      */
     private static $singleton = 'getInstance';
 
     /**
      * Defines a route with or without callback and method.
+     *
+     * @since 1.0.0
      *
      * @param string $method
      * @param array  $params
@@ -109,6 +129,8 @@ class Router
     /**
      * Set method name for use singleton pattern.
      *
+     * @since 1.0.0
+     *
      * @param string $method → singleton method name
      *
      * @return bool
@@ -126,6 +148,8 @@ class Router
 
     /**
      * Add route/s.
+     *
+     * @since 1.0.0
      *
      * @param array $routes → routes to add
      *                      string $routes[0] → route
@@ -153,6 +177,8 @@ class Router
     /**
      * Get method to call from URI.
      *
+     * @since 1.0.0
+     *
      * @param string $route
      *
      * @uses \string Url::addBackslash → add backslash if it doesn't exist
@@ -168,6 +194,8 @@ class Router
 
     /**
      * Defines callback if route is not found.
+     *
+     * @since 1.0.0
      *
      * @param callable $callback
      *
@@ -205,6 +233,8 @@ class Router
     /**
      * Runs the callback for the given request.
      *
+     * @since 1.0.0
+     *
      * @return response|false
      */
     public static function dispatch()
@@ -228,6 +258,8 @@ class Router
      * exist it will create a new object.
      *
      * @see setSingletonName() for change the method name.
+     *
+     * @since 1.0.0
      *
      * @param object $callback
      * @param array  $matched  → array of matched parameters
@@ -262,6 +294,8 @@ class Router
 
     /**
      * Clean resources.
+     *
+     * @since 1.0.0
      */
     private static function cleanResources()
     {
@@ -273,6 +307,8 @@ class Router
 
     /**
      * Validate route.
+     *
+     * @since 1.0.0
      *
      * @uses \string Url::getUriMethods → remove subdirectories & get methods
      * @uses \string Url::setUrlParams  → return url without url params
@@ -295,6 +331,8 @@ class Router
 
     /**
      * Check if route is defined without regex.
+     *
+     * @since 1.0.0
      *
      * @return callable|false
      */
@@ -327,6 +365,8 @@ class Router
 
     /**
      * Check if route is defined with regex.
+     *
+     * @since 1.0.0
      *
      * @uses \string Url::addBackslash → add backslash if it doesn't exist
      *
