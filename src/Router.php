@@ -131,7 +131,7 @@ class Router
      *                      string $routes[0] → route
      *                      string $routes[1] → class@method
      *
-     * @uses string Url::addBackSlash → add backslash if it doesn't exist
+     * @uses \string Url::addBackSlash → add backslash if it doesn't exist
      *
      * @link https://github.com/Josantonius/PHP-Url
      *
@@ -351,8 +351,6 @@ class Router
 
                 if ($methodRoute == $method || $methodRoute == 'ANY') {
                     $matched = explode('/', trim($matched[0], '/'));
-
-                    array_shift($matched);
 
                     if (! is_object(self::$callbacks[$pos])) {
                         self::$response = self::invokeObject(

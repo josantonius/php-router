@@ -55,13 +55,14 @@ class Example
     }
 
     /**
+     * @param string $method
      * @param string $category
      * @param string $item
      *
      * @return string
      */
-    public function blog($category, $item)
+    public function blog($method, $category, $item)
     {
-        return "Response from blog method: $category | $item";
+        return "Response from $method method: $category | $item";
     }
 }
