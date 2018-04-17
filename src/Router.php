@@ -343,6 +343,7 @@ class Router
         $replaces = array_values(self::$patterns);
 
         foreach (self::$routes as $route) {
+            $segments = explode('/', str_replace($searches, '', $route));
             $route = str_replace($searches, $replaces, $route);
             $route = Url::addBackSlash($route);
 
@@ -351,6 +352,7 @@ class Router
 
                 if ($methodRoute == $method || $methodRoute == 'ANY') {
                     $matched = explode('/', trim($matched[0], '/'));
+                    $matched = array_diff($matched, $segments);
 
                     if (! is_object(self::$callbacks[$pos])) {
                         self::$response = self::invokeObject(

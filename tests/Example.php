@@ -61,8 +61,8 @@ class Example
      *
      * @return string
      */
-    public function blog($method, $category, $item)
+    public function blog($category, $item)
     {
-        return "Response from $method method: $category | $item";
+        return "Response from blog method: $category | $item";
     }
 }
