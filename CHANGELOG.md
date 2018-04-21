@@ -1,8 +1,12 @@
 # CHANGELOG
 
+## 1.1.1 - 2018-04-22
+
+* Fixed a bug in the `dispatch` method. The error callback will only be executed in the case of return false. This will prevent possible errors if the route method returns void.
+
 ## 1.1.0 - 2018-04-17
 
-* Fixed a bug in the checkRegexRoutes method. Now routes with regular expressions will return only the parameters and not the entire segmented route.
+* Fixed a bug in the `checkRegexRoutes` method. Now routes with regular expressions will return only the parameters and not the entire segmented route.
 
 ## 1.0.9 - 2018-01-07
 

@@ -217,7 +217,11 @@ class Router
             return self::checkRoutes();
         }
 
-        return self::checkRegexRoutes() ?: self::getErrorCallback();
+        if (self::checkRegexRoutes() !== false) {
+            return self::checkRegexRoutes();
+        }
+
+        return self::getErrorCallback();
     }
 
     /**
