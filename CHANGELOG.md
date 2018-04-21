@@ -2,7 +2,7 @@
 
 ## 1.1.1 - 2018-04-22
 
-* Fixed a bug in the `dispatch` method. The error callback will only be executed in the case of return false. This will prevent possible errors if the route method returns void.
+* Fixed a bug in the `dispatch` method. The error callback will only be executed in the case of return false. This will prevent possible errors if the route method returns void. 
 
 ## 1.1.0 - 2018-04-17
 
