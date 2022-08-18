@@ -7,7 +7,7 @@
 Biblioteca para manejo de rutas.
 
 > Esta documentación hace referencia a la versión [1.1.1](https://github.com/josantonius/php-router/tree/1.1.1).
-> Los cambios realizados en la versión 2.0.0 (que archivó el repositorio) no fueron documentados ni probados.
+> Los cambios realizados en la versión 1.1.2 (que archivó el repositorio) no fueron documentados ni probados.
 
 ---
 

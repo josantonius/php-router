@@ -8,7 +8,7 @@
 Library for handling routes.
 
 > This documentation refers to version [1.1.1](https://github.com/josantonius/php-router/tree/1.1.1).
-> Changes made in version 2.0.0 (which archived the repository) were not documented or tested.
+> Changes made in version 1.1.2 (which archived the repository) were not documented or tested.
 
 ---
 
