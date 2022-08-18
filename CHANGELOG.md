@@ -1,8 +1,16 @@
 # CHANGELOG
 
+## 1.1.2 - 2022-08-18
+
+* The repository was archived.
+
+* The library was completely refactored without compatibility with previous versions and only compatible with PHP versions equal to or greater than 7.0.
+
+* This version was not documented or tested.
+
 ## 1.1.1 - 2018-04-22
 
-* Fixed a bug in the `dispatch` method. The error callback will only be executed in the case of return false. This will prevent possible errors if the route method returns void. 
+* Fixed a bug in the `dispatch` method. The error callback will only be executed in the case of return false. This will prevent possible errors if the route method returns void.
 
 ## 1.1.0 - 2018-04-17
 
@@ -55,7 +63,7 @@
 * Unit tests supported by `PHPUnit` were added.
 
 * The repository was synchronized with `Travis CI` to implement continuous integration.
- 
+
 * Added `Router/src/bootstrap.php` file
 
 * Added `Router/tests/bootstrap.php` file.
@@ -140,7 +148,6 @@
 * Deleted `Josantonius\Router\Router::loadRegexRoutes()` method.
 * Added   `Josantonius\Router\Router::_getRegexRoutes()` method.
 * Added   `Josantonius\Router\Router::_getErrorCallback()` method.
-
 
 ## 1.0.2 - 2017-03-18
 

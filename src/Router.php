@@ -1,17 +1,19 @@
 <?php
+
 /**
  * Library for handling routes.
  *
- * @author    Josantonius  - <hello@josantonius.com>
- * @author    Daveismyname - <dave@daveismyname.com>
- * @copyright 2017 - 2018 (c) Josantonius - PHP-Router
+ * @author    Josantonius - <hello@josantonius.com>
+ * @copyright 2017 - 2019 (c) Josantonius - PHP-Router
  * @license   https://opensource.org/licenses/MIT - The MIT License (MIT)
  * @link      https://github.com/Josantonius/PHP-Router
  * @since     1.0.0
  */
+
 namespace Josantonius\Router;
 
 use Josantonius\Url\Url;
+use Josantonius\Router\Exception\RouterException;
 
 /**
  * Route handler.
@@ -19,63 +21,61 @@ use Josantonius\Url\Url;
 class Router
 {
     /**
-     * If true - do not process other routes when match is found.
+     * Number of matching routes to run.
      *
-     * @var bool
+     * @since 2.0.0
+     *
+     * @var int
      */
-    public static $halts = false;
+    private static $processingLimit = 1;
 
     /**
      * Array of routes.
      *
      * @var array
      */
-    public static $routes = [];
+    private static $routes = [];
 
     /**
-     * Array of methods.
-     *
-     * @var array
-     */
-    public static $methods = [];
-
-    /**
-     * Array of callbacks.
-     *
-     * @var array
-     */
-    public static $callbacks = [];
-
-    /**
-     * Set an error callback.
-     *
-     * @var bool|int
-     */
-    public static $errorCallback = false;
-
-    /**
-     * Set an uri.
+     * URI that is accessed.
      *
      * @var null
      */
-    public static $uri;
+    private static $uri;
 
     /**
-     * Response from called method.
+     * Set a route error callback.
      *
-     * @since 1.0.6
+     * @since 2.0.0
      *
-     * @var callable
+     * @var array
      */
-    public static $response;
+    private static $routeErrorHook;
+
+    /**
+     * Before call route method callback.
+     *
+     * @since 2.0.0
+     *
+     * @var array
+     */
+    private static $beforeCallMethodHook;
+
+    /**
+     * Method name to use the singleton pattern and just create an instance.
+     *
+     * @var string
+     */
+    private static $singletonMethod = 'getInstance';
 
     /**
      * Set route patterns.
      *
      * @var array
      */
-    public static $patterns = [
+    private static $patterns = [
         ':any' => '[^/]+',
+        ':word' => '[a-zA-Z]+',
         ':num' => '-?[0-9]+',
         ':all' => '.*',
         ':hex' => '[[:xdigit:]]+',
@@ -83,344 +83,298 @@ class Router
     ];
 
     /**
-     * Method name to use the singleton pattern and just create an instance.
-     *
-     * @var string
+     * Add route/s.
      */
-    private static $singleton = 'getInstance';
+    public static function add(array $routes): bool
+    {
+        self::$routes = $routes;
+
+        foreach (self::$routes as $index => &$route) {
+            self::validateRequiredParams($route, $index);
+            self::normalizeParams($route);
+        }
+
+        self::sortRoutes();
+
+        return true;
+    }
 
     /**
-     * Defines a route with or without callback and method.
+     * Runs the callback/s for the given request.
      *
-     * @param string $method
-     * @param array  $params
+     * @return mixed → call method response
      */
-    public static function __callstatic($method, $params)
+    public static function dispatch()
     {
-        $uri = $params[0];
+        self::setUri();
 
-        $callback = $params[1];
+        $matches = self::getMatches();
 
-        array_push(self::$routes, $uri);
-        array_push(self::$methods, strtoupper($method));
-        array_push(self::$callbacks, $callback);
+        foreach ($matches as $index) {
+            $route = self::$routes[$index];
+
+            $class = $route['class'];
+            $method = $route['method'];
+            $params = $route['params'];
+
+            self::runBeforeCallMethodHook($route);
+
+            $response = self::callMethod($class, $method, $params);
+        }
+
+        return $response ?? self::runRouteErrorHook();
     }
 
     /**
      * Set method name for use singleton pattern.
      *
-     * @param string $method → singleton method name
-     *
-     * @return bool
+     * @since 2.0.0
      */
-    public static function setSingletonName($method)
+    public static function setSingletonMethod(string $method): bool
     {
-        if (! is_string($method) || empty($method)) {
-            return false;
-        }
-
-        self::$singleton = $method;
+        self::$singletonMethod = $method;
 
         return true;
     }
 
     /**
-     * Add route/s.
+     * Set route error hook.
      *
-     * @param array $routes → routes to add
-     *                      string $routes[0] → route
-     *                      string $routes[1] → class@method
-     *
-     * @uses \string Url::addBackSlash → add backslash if it doesn't exist
-     *
-     * @link https://github.com/Josantonius/PHP-Url
-     *
-     * @return bool
+     * @since 2.0.0
      */
-    public static function add($routes)
+    public static function setRouteErrorHook($class, string $method): bool
     {
-        if (! is_array($routes)) {
-            return false;
-        }
-
-        foreach ($routes as $route => $value) {
-            self::$routes[Url::addBackSlash($route)] = $value;
-        }
+        self::$routeErrorHook = [
+            'class' => $class,
+            'method' => $method
+        ];
 
         return true;
     }
 
     /**
-     * Get method to call from URI.
+     * Set before call method hook.
      *
-     * @param string $route
-     *
-     * @uses \string Url::addBackSlash → add backslash if it doesn't exist
-     *
-     * @return string|null → route or null
+     * @since 2.0.0
      */
-    public static function getMethod($route)
+    public static function setBeforeCallMethodHook($class, string $method): bool
     {
-        $route = Url::addBackSlash($route);
-
-        return isset(self::$routes[$route]) ? self::$routes[$route] : null;
-    }
-
-    /**
-     * Defines callback if route is not found.
-     *
-     * @param callable $callback
-     *
-     * @return bool true
-     */
-    public static function error($callback)
-    {
-        self::$errorCallback = $callback;
+        self::$beforeCallMethodHook = [
+            'class' => $class,
+            'method' => $method
+        ];
 
         return true;
     }
 
     /**
-     * Continue processing after match (true) or stop it (false).
+     * Set the number of routes to run.
      *
-     * Also can specify the number of total routes to process (int).
-     *
-     * @since 1.0.4
-     *
-     * @param bool|int $value
-     *
-     * @return bool true
+     * @since 2.0.0
      */
-    public static function keepLooking($value = true)
+    public static function setProcessingLimit(int $value = 999): bool
     {
-        $value = (! is_bool($value) || ! is_int($value)) ? false : true;
-
-        $value = (is_int($value) && $value > 0) ? $value - 1 : $value;
-
-        self::$halts = $value;
+        self::$processingLimit = $value;
 
         return true;
     }
 
     /**
-     * Runs the callback for the given request.
+     * Get the number of routes to run.
      *
-     * @return response|false
+     * @since 2.0.0
      */
-    public static function dispatch()
+    public static function getProcessingLimit(): int
     {
-        self::routeValidator();
-
-        self::$routes = str_replace('//', '/', self::$routes);
-
-        if (in_array(self::$uri, self::$routes, true)) {
-            return self::checkRoutes();
-        }
-
-        if (self::checkRegexRoutes() !== false) {
-            return self::checkRegexRoutes();
-        }
-
-        return self::getErrorCallback();
+        return self::$processingLimit;
     }
 
     /**
-     * Call object and instantiate.
+     * Set URI.
      *
-     * By default it will look for the 'getInstance' method to use singleton
-     * pattern and create a single instance of the class. If it does not
-     * exist it will create a new object.
+     * @since 2.0.0
      *
-     * @see setSingletonName() for change the method name.
-     *
-     * @param object $callback
-     * @param array  $matched  → array of matched parameters
-     *
-     * @return callable|false
+     * @uses string Url::getUriMethods → remove subdirectories & get methods
+     * @uses string Url::setUrlParams  → return url without url params
+     * @uses string Url::addBackSlash  → add backslash if it doesn't exist
      */
-    protected static function invokeObject($callback, $matched = null)
+    private static function setUri(): void
     {
-        $last = explode('/', $callback);
-        $last = end($last);
+        $uri = Url::setUrlParams(Url::getUriMethods());
 
-        $segments = explode('@', $last);
+        self::$uri = Url::addBackSlash($uri);
+    }
 
-        $class = $segments[0];
-        $method = $segments[1];
-        $matched = $matched ? $matched : [];
+    /**
+     * Validate the required parameters for the route.
+     *
+     * @since 2.0.0
+     *
+     * @throws RouterException → if the required parameters for the route aren't received
+     */
+    private static function validateRequiredParams(array $route, int $index): void
+    {
+        $required = array('name', 'path', 'class', 'method');
 
-        if (method_exists($class, self::$singleton)) {
-            $instance = call_user_func([$class, self::$singleton]);
+        if (count(array_intersect_key(array_flip($required), $route)) !== 4) {
+            throw new RouterException(
+                "Route with index $index doesn't contain the required parameters: " .
+                    implode($required, ', ') . '.'
+            );
+        }
+    }
 
-            return call_user_func_array([$instance, $method], $matched);
+    /**
+     * Normalize route parameters.
+     *
+     * @since 2.0.0
+     */
+    private static function normalizeParams(array &$route): void
+    {
+        $route['path'] = Url::addBackSlash($route['path']);
+        $route['order'] = $route['order'] ?? 8;
+        $route['params'] = $route['params'] ?? [];
+    }
+
+    /**
+     * Sort routes.
+     *
+     * @since 2.0.0
+     */
+    private static function sortRoutes(): void
+    {
+        usort(self::$routes, function ($a, $b) {
+            return $a['order'] <=> $b['order'];
+        });
+    }
+
+    /**
+     * Get matches for the received route.
+     *
+     * @since 2.0.0
+     */
+    private static function getMatches(): array
+    {
+        $matches = array_keys(array_column(self::$routes, 'path'), self::$uri);
+
+        if (self::getProcessingLimit() > count($matches)) {
+            self::setRegexMatches($matches);
         }
 
-        if (class_exists($class)) {
-            $instance = new $class;
+        return array_slice($matches, 0, self::getProcessingLimit());
+    }
 
-            return call_user_func_array([$instance, $method], $matched);
+    /**
+     * Set regular expression matches for the received route.
+     *
+     * @since 2.0.0
+     */
+    private static function setRegexMatches(array &$matches): void
+    {
+        $searches = array_keys(self::$patterns);
+        $replaces = array_values(self::$patterns);
+
+        foreach (self::$routes as $index => &$route) {
+            if (self::getProcessingLimit() === count($matches)) {
+                break;
+            }
+
+            if (self::hasRegexMatch($route, $searches, $replaces)) {
+                self::setRouteParams($route, $searches);
+                $matches[] = $index;
+            }
+        }
+    }
+
+    /**
+     * Check if route is defined with regular expression.
+     *
+     * @since 2.0.0
+     */
+    private static function hasRegexMatch(array $route, array $searches, array $replaces): bool
+    {
+        $path = $route['path'];
+
+        if (strpos($path, ':') !== false) {
+            $path = str_replace($searches, $replaces, $path);
+            return preg_match('#^' . $path . '$#', self::$uri, $matched);
         }
 
         return false;
     }
 
     /**
-     * Clean resources.
+     * Extract the parameters from the route and save them.
+     *
+     * @since 2.0.0
      */
-    private static function cleanResources()
+    private static function setRouteParams(array &$route, array $searches): void
     {
-        self::$callbacks = [];
-        self::$methods = [];
-        self::$halts = false;
-        self::$response = false;
+        $uriSegments = explode('/', trim(self::$uri, '/'));
+        $pathSegments = explode('/', str_replace($searches, '', $route['path']));
+
+        $route['params'] = array_values(array_diff($uriSegments, $pathSegments));
     }
 
     /**
-     * Validate route.
+     * Run route error hook.
      *
-     * @uses \string Url::getUriMethods → remove subdirectories & get methods
-     * @uses \string Url::setUrlParams  → return url without url params
-     * @uses \string Url::addBackSlash  → add backslash if it doesn't exist
+     * @since 2.0.0
+     *
+     * @return callable|null
      */
-    private static function routeValidator()
+    private static function runRouteErrorHook()
     {
-        self::$uri = Url::getUriMethods();
-
-        self::$uri = Url::setUrlParams(self::$uri);
-
-        self::$uri = Url::addBackSlash(self::$uri);
-
-        self::cleanResources();
-
-        if (self::getMethod(self::$uri)) {
-            self::any(self::$uri, self::$routes[self::$uri]);
-        }
+        return self::$routeErrorHook ? self::callMethod(
+            self::$routeErrorHook['class'],
+            self::$routeErrorHook['method'],
+            [self::$uri]
+        ) : null;
     }
 
     /**
-     * Check if route is defined without regex.
+     * Run before call method hook.
      *
-     * @return callable|false
+     * @since 2.0.0
+     *
+     * @return callable|null
      */
-    private static function checkRoutes()
+    private static function runBeforeCallMethodHook(array $route)
     {
-        $method = $_SERVER['REQUEST_METHOD'];
-
-        $route_pos = array_keys(self::$routes, self::$uri, true);
-
-        foreach ($route_pos as $route) {
-            $methodRoute = self::$methods[$route];
-
-            if ($methodRoute == $method || $methodRoute == 'ANY') {
-                if (! is_object($callback = self::$callbacks[$route])) {
-                    self::$response = self::invokeObject($callback);
-                } else {
-                    self::$response = call_user_func($callback);
-                }
-
-                if (! self::$halts) {
-                    return self::$response;
-                }
-
-                self::$halts--;
-            }
-        }
-
-        return self::$response;
+        return self::$beforeCallMethodHook ? self::callMethod(
+            self::$beforeCallMethodHook['class'],
+            self::$beforeCallMethodHook['method'],
+            [$route]
+        ) : null;
     }
 
     /**
-     * Check if route is defined with regex.
+     * Instantiate and call the method.
      *
-     * @uses \string Url::addBackSlash → add backslash if it doesn't exist
+     * By default it will look for the 'getInstance' method to use singleton
+     * pattern and create a single instance of the class. If it doesn't
+     * exist it'll create a new object.
      *
-     * @return callable|false
+     * @since 2.0.0
+     *
+     * @see setSingletonMethod() for change the singleton method name.
+     *
+     * @return callable|null
      */
-    private static function checkRegexRoutes()
+    private static function callMethod($class, string $method, array $params = [])
     {
-        $pos = 0;
-
-        self::getRegexRoutes();
-
-        $method = $_SERVER['REQUEST_METHOD'];
-        $searches = array_keys(self::$patterns);
-        $replaces = array_values(self::$patterns);
-
-        foreach (self::$routes as $route) {
-            $segments = explode('/', str_replace($searches, '', $route));
-            $route = str_replace($searches, $replaces, $route);
-            $route = Url::addBackSlash($route);
-
-            if (preg_match('#^' . $route . '$#', self::$uri, $matched)) {
-                $methodRoute = self::$methods[$pos];
-
-                if ($methodRoute == $method || $methodRoute == 'ANY') {
-                    $matched = explode('/', trim($matched[0], '/'));
-                    $matched = array_diff($matched, $segments);
-
-                    if (! is_object(self::$callbacks[$pos])) {
-                        self::$response = self::invokeObject(
-                            self::$callbacks[$pos],
-                            $matched
-                        );
-                    } else {
-                        self::$response = call_user_func_array(
-                            self::$callbacks[$pos],
-                            $matched
-                        );
-                    }
-
-                    if (! self::$halts) {
-                        return self::$response;
-                    }
-
-                    self::$halts--;
-                }
-            }
-
-            $pos++;
+        if (is_object($class)) {
+            $instance = $class;
+        } elseif (method_exists($class, self::$singletonMethod)) {
+            $instance = call_user_func([$class, self::$singletonMethod]);
+        } elseif (class_exists($class)) {
+            $instance = new $class;
         }
 
-        return self::$response;
-    }
-
-    /**
-     * Load routes with regular expressions if the route is not found.
-     *
-     * @since 1.0.3
-     */
-    private static function getRegexRoutes()
-    {
-        foreach (self::$routes as $key => $value) {
-            unset(self::$routes[$key]);
-
-            if (strpos($key, ':') !== false) {
-                self::any($key, $value);
-            }
-        }
-    }
-
-    /**
-     * Get error callback if route does not exists.
-     *
-     * @since 1.0.3
-     *
-     * @return callable
-     */
-    private static function getErrorCallback()
-    {
-        $errorCallback = self::$errorCallback;
-
-        self::$errorCallback = false;
-
-        if (! $errorCallback) {
-            return false;
+        if (method_exists($instance ?? '', $method)) {
+            return call_user_func_array([$instance, $method], $params);
         }
 
-        if (! is_object($errorCallback)) {
-            return self::invokeObject($errorCallback);
-        }
-
-        return call_user_func($errorCallback);
+        return null;
     }
 }
